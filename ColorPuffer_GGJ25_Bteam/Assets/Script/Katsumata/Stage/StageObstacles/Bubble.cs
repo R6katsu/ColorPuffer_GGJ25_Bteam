@@ -79,10 +79,8 @@ public class Bubble : MonoBehaviour, IObstacle
         // PLの色を変更する
         player.HitObstacle(_myColorType);
 
-        // 非有効化後、吐き出されるまでPLの子オブジェクトになる
-        gameObject.SetActive(false);
-        transform.parent = player.transform;
-        transform.localPosition = Vector2.zero;
+        // 消える
+        Destroy(gameObject);
 
         // 絶対にtrueを返す泡
         return true;

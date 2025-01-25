@@ -450,6 +450,11 @@ MonoBehaviour:
   small: {fileID: 0}
   big: {fileID: 0}
   color: []
+  _playSEInfo:
+    mySENumber: 0
+    minPitch: 0
+    maxPitch: 0
+    volume: 0
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

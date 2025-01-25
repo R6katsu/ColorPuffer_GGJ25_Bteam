@@ -60,7 +60,6 @@ public class PointFish : MonoBehaviour, IObstacle
         // •‚¯‚ç‚ê‚éê‡‚Ì‚İŒø‰Ê‰¹‚ğ–Â‚ç‚·
         if (isSuccess)
         {
-            Debug.Log("“¯‚¶F‚È‚ç•‚¯‚ç‚ê‚é");
             // ‚«”ò‚Ô‚ÌŒø‰Ê‰¹‚ğÄ¶
             AudioPlayManager.Instance.PlaySE2D
             (
