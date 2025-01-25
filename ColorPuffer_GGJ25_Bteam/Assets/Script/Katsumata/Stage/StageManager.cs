@@ -9,6 +9,16 @@ using Random = UnityEngine.Random;
 #endif
 
 /// <summary>
+/// 代入先の配列の種類
+/// </summary>
+public enum SpawnType : byte
+{
+    Obstacle,
+    Item,
+    Bubble
+}
+
+/// <summary>
 /// 生成位置の情報
 /// </summary>
 [Serializable]
@@ -25,22 +35,31 @@ public struct SpawnPointsInfo
 }
 
 /// <summary>
+/// 生成確率
+/// </summary>
+[Serializable]
+public struct GenerationProbability
+{
+    [Header("生成するPrefab")]
+    public Transform prefab;
+
+    [Min(0), Header("生成確率（配列に容れる数）")]
+    public int probability;
+
+    [Tooltip("代入先の配列の種類")]
+    public SpawnType mySpawnType;
+}
+
+/// <summary>
 /// ステージ管理
 /// </summary>
-[RequireComponent(typeof(MeshRenderer))]
 public class StageManager : MonoBehaviour
 {
     [Tooltip("泡を生成する高さ")]
     private static readonly Vector2 _bubbleSpawnHeight = Vector2.down * 5;
 
-    [SerializeField, Header("生成する障害物の配列")]
-    private Transform[] _obstaclePrefabs = null;
-
-    [SerializeField, Header("生成するアイテムの配列")]
-    private Transform[] _itemPrefabs = null;
-
-    [SerializeField, Header("生成する泡の配列")]
-    private Transform[] _bubblePrefabs = null;
+    [SerializeField, Header("生成対象、生成確率、代入先の配列の種類")]
+    private GenerationProbability[] _generationProbabilitys = null;
 
     [SerializeField, Min(0.0f), Header("障害物を生成する間隔")]
     private float _obstacleSpawnSpan = 0.0f;
@@ -57,28 +76,61 @@ public class StageManager : MonoBehaviour
     [SerializeField, Header("泡の生成位置の情報")]
     private SpawnPointsInfo _bubbleSpawnPointsInfo = new();
 
-    [Tooltip("自身のMeshRenderer")]
-    private MeshRenderer _myMeshRenderer = null;
+    [Tooltip("生成する障害物の配列")]
+    private List<Transform> _obstaclePrefabs = null;
 
-    [Tooltip("自身のMaterial")]
-    private Material _myMaterial = null;
+    [Tooltip("生成するアイテムの配列")]
+    private List<Transform> _itemPrefabs = null;
+
+    [Tooltip("生成する泡の配列")]
+    private List<Transform> _bubblePrefabs = null;
 
     private void OnEnable()
     {
+        // 初期化
+        _obstaclePrefabs = new();
+        _itemPrefabs = new();
+        _bubblePrefabs = new();
+
+        // GenerationProbabilityを使って生成対象の配列を作成する
+        foreach (var generationProbability in _generationProbabilitys)
+        {
+            switch (generationProbability.mySpawnType)
+            {
+                case SpawnType.Obstacle:
+                    for (int i = 0; i < generationProbability.probability; i++)
+                    {
+                        _obstaclePrefabs.Add(generationProbability.prefab);
+                    }
+                    continue;
+
+                case SpawnType.Item:
+                    for (int i = 0; i < generationProbability.probability; i++)
+                    {
+                        _itemPrefabs.Add(generationProbability.prefab);
+                    }
+                    continue;
+
+                case SpawnType.Bubble:
+                    for (int i = 0; i < generationProbability.probability; i++)
+                    {
+                        _bubblePrefabs.Add(generationProbability.prefab);
+
+                    }
+                    continue;
+            }
+        }
+
         // 生成位置の情報を初期化
         _spawnPointsInfo = InitializationSpawnPointsInfo(_spawnPointsInfo);
         _bubbleSpawnPointsInfo = InitializationSpawnPointsInfo(_bubbleSpawnPointsInfo);
 
         // 障害物、アイテムを生成
-        StartCoroutine(RandomPrefabSpawner(_obstaclePrefabs, _obstacleSpawnSpan));
-        StartCoroutine(RandomPrefabSpawner(_itemPrefabs, _itemSpawnSpan));
+        StartCoroutine(RandomPrefabSpawner(_obstaclePrefabs.ToArray(), _obstacleSpawnSpan));
+        StartCoroutine(RandomPrefabSpawner(_itemPrefabs.ToArray(), _itemSpawnSpan));
 
         // 泡を生成
-        StartCoroutine(RandomBubbleSpawner(_bubblePrefabs, _bubbleSpawnSpan));
-
-        // RequireComponent
-        TryGetComponent(out _myMeshRenderer);
-        _myMaterial = _myMeshRenderer.material;
+        StartCoroutine(RandomBubbleSpawner(_bubblePrefabs.ToArray(), _bubbleSpawnSpan));
     }
 
     /// <summary>

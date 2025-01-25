@@ -13,7 +13,7 @@ public static class ObstaclesMovementRangeUtility
     /// <summary>
     /// áŠQ•¨‚ªˆÚ“®‰Â”\‚È”ÍˆÍ
     /// </summary>
-    public static Vector3 Range { get; } = new Vector2(20.0f, 12.0f);
+    public static Vector3 Range { get; } = new Vector2(40.0f, 20.0f);
 
     /// <summary>
     /// áŠQ•¨‚ªˆÚ“®‰Â”\‚È”ÍˆÍ‚Ì’†S
