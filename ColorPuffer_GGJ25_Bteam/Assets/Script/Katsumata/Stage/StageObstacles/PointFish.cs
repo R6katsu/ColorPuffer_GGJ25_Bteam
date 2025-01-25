@@ -8,6 +8,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(ObstaclesMovementRange))]
+[RequireComponent(typeof(ScrollObstacle))]
 public class PointFish : MonoBehaviour, IObstacle
 {
     private static readonly Dictionary<ColorType, Color> _fishColors = new()
@@ -28,11 +29,15 @@ public class PointFish : MonoBehaviour, IObstacle
     [Tooltip("自身のRigidbody2D")]
     private Rigidbody2D _myRigidbody = null;
 
+    [Tooltip("自身のScrollObstacle")]
+    private ScrollObstacle _myScrollObstacle = null;
+
     private void OnEnable()
     {
         // RequireComponent
         TryGetComponent(out _myRigidbody);
         TryGetComponent(out _mySpriteRenderer);
+        TryGetComponent(out _myScrollObstacle);
 
         // 自身の色の種類に紐づけられた色に変更
         _mySpriteRenderer.color = (_fishColors.ContainsKey(_myColorType)) ? _fishColors[_myColorType] : _mySpriteRenderer.color;
@@ -45,6 +50,12 @@ public class PointFish : MonoBehaviour, IObstacle
     {
         // 移動量を初期化
         _myRigidbody.velocity = Vector2.zero;
+
+        // 摩擦無効化
+        _myRigidbody.drag = 0.0f;
+
+        // スクロール方向への移動を無効化
+        _myScrollObstacle.enabled = false;
 
         // 回転する
         _myRigidbody.AddTorque(_speed, ForceMode2D.Impulse);

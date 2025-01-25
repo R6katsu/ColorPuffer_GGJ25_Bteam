@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float areaLeft = -5;
 
     [SerializeField]
-    private Rigidbody rb;
+    private Rigidbody2D rb;
 
     private bool isHit = false;
 
@@ -35,7 +35,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        movement = Vector3.zero;
+        movement = Vector2.zero;
         // “ü—Í’l‚ðŽæ“¾
         moveX = Input.GetAxis("Horizontal");
         moveY = Input.GetAxis("Vertical");
