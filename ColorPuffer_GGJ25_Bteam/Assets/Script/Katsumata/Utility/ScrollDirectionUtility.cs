@@ -13,5 +13,5 @@ static public class ScrollDirectionUtility
     /// <summary>
     /// ƒXƒNƒ[ƒ‹‚·‚é•ûŒü
     /// </summary>
-    static public Vector2 ScrollDirection { get; } = Vector2.left;
+    static public Vector2 Direction { get; } = Vector2.left;
 }

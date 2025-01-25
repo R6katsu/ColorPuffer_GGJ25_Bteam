@@ -25,6 +25,6 @@ public class ScrollObstacle : MonoBehaviour
     private void FixedUpdate()
     {
         // ƒXƒNƒ[ƒ‹‚·‚é•ûŒü‚ÉˆÚ“®
-        _myRigidbody.AddForce(ScrollDirectionUtility.ScrollDirection * _scrollSpeed, ForceMode2D.Force);
+        _myRigidbody.AddForce(ScrollDirectionUtility.Direction * _scrollSpeed, ForceMode2D.Force);
     }
 }

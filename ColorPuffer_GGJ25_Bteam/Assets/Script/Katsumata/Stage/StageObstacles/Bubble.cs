@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.ObjectModel;
 
 #if UNITY_EDITOR
 using System.Collections;
@@ -9,6 +10,8 @@ using System.Collections.Generic;
 /// 泡
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(ObstaclesMovementRange))]
 public class Bubble : MonoBehaviour, IObstacle
 {
     [Tooltip("浮上する方向")]
@@ -17,16 +20,37 @@ public class Bubble : MonoBehaviour, IObstacle
     [SerializeField, Min(0.0f), Header("浮上速度")]
     private float _surfacedSpeed = 0.0f;
 
-    [Tooltip("自身の色の種類")]
+    [SerializeField, Header("泡の見た目の配列")]
+    private Sprite[] _bubbleSprites = null;
+
+    [SerializeField, Header("自身の色の種類")]
     private ColorType _myColorType = ColorType.Default;
 
     [Tooltip("自身のRigidbody")]
     private Rigidbody2D _myRigidbody = null;
 
+    [Tooltip("自身のSpriteRenderer")]
+    private SpriteRenderer _mySpriteRenderer = null;
+
+    [Tooltip("泡の種類とSpriteの辞書")]
+    private Dictionary<ColorType, Sprite> _bubbleColorSprites = new();
+
     private void OnEnable()
     {
         // RequireComponent
         TryGetComponent(out _myRigidbody);
+        TryGetComponent(out _mySpriteRenderer);
+
+        // 泡の種類とSpriteの辞書を初期化
+        _bubbleColorSprites = new()
+        {
+            { ColorType.Default, _bubbleSprites[(int)ColorType.Default] },
+            { ColorType.Red, _bubbleSprites[(int)ColorType.Red] },
+            { ColorType.Blue, _bubbleSprites[(int)ColorType.Blue] }
+        };
+
+        // 自身の色の種類に紐づけられたSpriteに変更
+        _mySpriteRenderer.sprite = (_bubbleColorSprites.ContainsKey(_myColorType)) ? _bubbleColorSprites[_myColorType] : _mySpriteRenderer.sprite;
     }
 
     private void FixedUpdate()

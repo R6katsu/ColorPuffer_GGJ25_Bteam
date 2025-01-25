@@ -13,6 +13,7 @@ using Unity.VisualScripting;
 /// ¬‹›
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(ObstaclesMovementRange))]
 public class Fish : MonoBehaviour, IObstacle
 {
     [SerializeField, Min(0.0f), Header("ˆÚ“®‘¬“x")]

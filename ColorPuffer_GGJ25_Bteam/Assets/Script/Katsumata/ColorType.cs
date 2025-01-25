@@ -12,5 +12,6 @@ public enum ColorType : byte
 {
     [Tooltip("‰Šú’l")] Default,
     [Tooltip("Ô")] Red,
-    [Tooltip("Â")] Blue
+    [Tooltip("Â")] Blue,
+    [Tooltip("‡")] Purple
 }

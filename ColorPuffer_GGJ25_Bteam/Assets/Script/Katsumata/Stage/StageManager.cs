@@ -31,7 +31,7 @@ public struct SpawnPointsInfo
 public class StageManager : MonoBehaviour
 {
     [Tooltip("泡を生成する高さ")]
-    private static readonly Vector2 _bubbleSpawnHeight = Vector2.down * 6;
+    private static readonly Vector2 _bubbleSpawnHeight = Vector2.down * 5;
 
     [SerializeField, Header("生成する障害物の配列")]
     private Transform[] _obstaclePrefabs = null;
@@ -39,8 +39,8 @@ public class StageManager : MonoBehaviour
     [SerializeField, Header("生成するアイテムの配列")]
     private Transform[] _itemPrefabs = null;
 
-    [SerializeField, Header("生成する泡のPrefab")]
-    private Transform _bubblePrefab = null;
+    [SerializeField, Header("生成する泡の配列")]
+    private Transform[] _bubblePrefabs = null;
 
     [SerializeField, Min(0.0f), Header("障害物を生成する間隔")]
     private float _obstacleSpawnSpan = 0.0f;
@@ -63,40 +63,22 @@ public class StageManager : MonoBehaviour
     [Tooltip("自身のMaterial")]
     private Material _myMaterial = null;
 
-    [SerializeField] private string texturePropertyName = "_MainTex"; // テクスチャプロパティ名
-    [SerializeField] private float speed = 1f; // オフセットの移動速度
-    private float offsetX = 0f; // オフセットのX値
-
     private void OnEnable()
     {
         // 生成位置の情報を初期化
         _spawnPointsInfo = InitializationSpawnPointsInfo(_spawnPointsInfo);
         _bubbleSpawnPointsInfo = InitializationSpawnPointsInfo(_bubbleSpawnPointsInfo);
 
-        // 障害物、アイテム、泡の生成
+        // 障害物、アイテムを生成
         StartCoroutine(RandomPrefabSpawner(_obstaclePrefabs, _obstacleSpawnSpan));
         StartCoroutine(RandomPrefabSpawner(_itemPrefabs, _itemSpawnSpan));
-        StartCoroutine(RandomPrefabSpawner(_bubblePrefab, _bubbleSpawnSpan));
+
+        // 泡を生成
+        StartCoroutine(RandomBubbleSpawner(_bubblePrefabs, _bubbleSpawnSpan));
 
         // RequireComponent
         TryGetComponent(out _myMeshRenderer);
         _myMaterial = _myMeshRenderer.material;
-    }
-
-    private void Update()
-    {
-        // X方向のオフセットを更新
-        offsetX += speed * Time.deltaTime;
-
-        // 0から1の範囲にリセット（ループ処理）
-        if (offsetX > 1f)
-        {
-            offsetX -= 1f;
-        }
-
-        // マテリアルにオフセットを設定
-        Vector2 offset = new Vector2(offsetX, 0f);
-        _myMaterial.SetTextureOffset(texturePropertyName, offset);
     }
 
     /// <summary>
@@ -139,16 +121,16 @@ public class StageManager : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="prefab"></param>
+    /// <param name="prefabs"></param>
     /// <param name="span"></param>
     /// <returns></returns>
-    private IEnumerator RandomPrefabSpawner(Transform prefab, float span)
+    private IEnumerator RandomBubbleSpawner(Transform[] prefabs, float span)
     {
         while (true)
         {
             yield return new WaitForSeconds(span);
 
-            SpawnRandomPrefab(prefab);
+            SpawnRandomBubble(prefabs);
         }
     }
 
@@ -168,12 +150,17 @@ public class StageManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ランダムな生成位置にPrefabを生成
+    /// ランダムな生成位置に泡を生成
     /// </summary>
-    private Transform SpawnRandomPrefab(Transform prefab)
+    private Transform SpawnRandomBubble(Transform[] prefabs)
     {
+        if (prefabs == null || prefabs.Length <= 0) { return null; }
+
+        // ランダムなPrefabを抽選
+        var prefab = prefabs[Random.Range(0, prefabs.Length)];
+
         // 0～1の間のランダムな値を生成
-        float t = Random.Range(0f, 1f);
+        float t = Random.value;
 
         // ランダムな生成位置を抽選
         var spawnPoint = Vector2.Lerp(_bubbleSpawnPointsInfo.leftPoint, _bubbleSpawnPointsInfo.rightPoint, t);
