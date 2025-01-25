@@ -94,9 +94,10 @@ public class TrappedFish : MonoBehaviour, IObstacle
     /// <summary>
     /// PLに当たったら釣り針から助けられる
     /// </summary>
-    public void HitObstacle(Player player)
+    public bool HitObstacle(Player player)
     {
-        //if (HELPED_COLOR != /* PLの色 */) { return; }
+        // HELPED_COLORじゃなければ助けられない
+        if (HELPED_COLOR != player.CurrentColorType) { return false; }
 
         // 助けられた時の効果音を再生
         AudioPlayManager.Instance.PlaySE2D
@@ -125,6 +126,8 @@ public class TrappedFish : MonoBehaviour, IObstacle
 
         // 釣り糸をフィードアウト
         StartCoroutine(LineFeedOut());
+
+        return true;
     }
 
     /// <summary>

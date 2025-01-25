@@ -1,6 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using System.Collections;
+#endif
 
 /// <summary>
 /// ポイント対象の魚
@@ -49,16 +52,24 @@ public class PointFish : MonoBehaviour, IObstacle
     /// <summary>
     /// PLに当たったら吹き飛ぶ
     /// </summary>
-    public void HitObstacle(Player player)
+    public bool HitObstacle(Player player)
     {
-        // 吹き飛ぶ時の効果音を再生
-        AudioPlayManager.Instance.PlaySE2D
-        (
-            (int)_playSEInfo.mySENumber,
-            _playSEInfo.minPitch,
-            _playSEInfo.maxPitch,
-            _playSEInfo.volume
-        );
+        // 同じ色なら助けられる
+        var isSuccess = _myColorType == player.CurrentColorType;
+
+        // 助けられる場合のみ効果音を鳴らす
+        if (isSuccess)
+        {
+            Debug.Log("同じ色なら助けられる");
+            // 吹き飛ぶ時の効果音を再生
+            AudioPlayManager.Instance.PlaySE2D
+            (
+                (int)_playSEInfo.mySENumber,
+                _playSEInfo.minPitch,
+                _playSEInfo.maxPitch,
+                _playSEInfo.volume
+            );
+        }
 
         // 移動量を初期化
         _myRigidbody.velocity = Vector2.zero;
@@ -75,5 +86,7 @@ public class PointFish : MonoBehaviour, IObstacle
         // PLから逃げる
         var dir = transform.position - player.transform.position;
         _myRigidbody.AddForce(dir * _speed, ForceMode2D.Impulse);
+
+        return isSuccess;
     }
 }

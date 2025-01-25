@@ -1,9 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEditor;
-
 
 #if UNITY_EDITOR
+using UnityEditor;
 using System.Collections.ObjectModel;
 using System.Collections;
 #endif
@@ -66,7 +65,7 @@ public class Bubble : MonoBehaviour, IObstacle
     /// <summary>
     /// PL‚É“–‚½‚Á‚½‚çPL‚ÌF‚ğ•Ï‚¦‚ÄÁ‚¦‚é
     /// </summary>
-    public void HitObstacle(Player player)
+    public bool HitObstacle(Player player)
     {
         // –A‚ğæ“¾‚ÌŒø‰Ê‰¹‚ğÄ¶
         AudioPlayManager.Instance.PlaySE2D
@@ -84,5 +83,8 @@ public class Bubble : MonoBehaviour, IObstacle
         gameObject.SetActive(false);
         transform.parent = player.transform;
         transform.localPosition = Vector2.zero;
+
+        // â‘Î‚Étrue‚ğ•Ô‚·–A
+        return true;
     }
 }

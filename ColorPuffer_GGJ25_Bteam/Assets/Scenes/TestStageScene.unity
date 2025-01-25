@@ -804,7 +804,7 @@ MonoBehaviour:
     probability: 10
     mySpawnType: 0
   - prefab: {fileID: 9190944786044648873, guid: 20cf84a5653d11b4f8277bc33d137365, type: 3}
-    probability: 100
+    probability: 50
     mySpawnType: 0
   _obstacleSpawnSpan: 0.9
   _itemSpawnSpan: 1.1
