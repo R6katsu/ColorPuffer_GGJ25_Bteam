@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float areaLeft = -5;
 
     private static float upperLimit = 60f, lowerLimit = -60f;
-   
+
 
     [SerializeField]
     private Rigidbody2D rb;
@@ -59,7 +59,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetMouseButtonDown(0)) { bubbleCount++; }
+        if (Input.GetMouseButtonDown(0)) { bubbleCount++; }
         movement = Vector2.zero;
         // “ü—Í’l‚ðŽæ“¾
         moveX = Input.GetAxis("Horizontal");
@@ -68,7 +68,7 @@ public class Player : MonoBehaviour
         Move(); //ˆÚ“®
         Rotation();
         rb.velocity = movement;
-        if(bubbleCount <= 2)
+        if (bubbleCount <= 2)
         {
         }
         else
@@ -91,7 +91,7 @@ public class Player : MonoBehaviour
     }
     private void MoveArea() //”ÍˆÍŽw’è
     {
-        if(moveX > 0 && rb.position.x >= areaRight)
+        if (moveX > 0 && rb.position.x >= areaRight)
         {
             moveX = 0;
         }
@@ -127,28 +127,31 @@ public class Player : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
-        //if (other.gameObject.TryGetComponent(out IObstacle obstacles))
-        //{
-        //    obstacles.HitObstacle(this);
-        //    currentColorType = ColorType.Default;
-        //    bubbleCount = 0;
-        //}
-        //if (other.gameObject.TryGetComponent(out Bubble bubble))
-        //{
-        //    bubble.HitObstacle(bubbleColor);
-        //    bubbleCount++;
-        //}
-        //if (other.gameObject.TryGetComponent(out PointFish point))
-        //{
-        //    point.HitObstacle(fishColor);
-        //}
+
+        if (other.gameObject.TryGetComponent(out Bubble bubble))
+        {
+            bubble.HitObstacle(this);
+            bubbleCount++;
+        }
+        else if (other.gameObject.TryGetComponent(out IObstacle obstacles))
+        {
+            obstacles.HitObstacle(this);
+            currentColorType = ColorType.Default;
+            bubbleCount = 0;
+        }
+        if (other.gameObject.TryGetComponent(out PointFish point))
+        {
+            point.HitObstacle(this);
+        }
     }
     public void HitObstacle(ColorType bubble)
     {
         bubbleColor = bubble;
-        if (bubbleColor == ColorType.Blue && currentColorType == ColorType.Red)
+        if ((bubbleColor == ColorType.Blue && currentColorType == ColorType.Red) ||
+            (bubbleColor == ColorType.Red && currentColorType == ColorType.Blue))
         {
             currentColorType = ColorType.Purple;
+            Debug.Log(currentColorType);
         }
         else if (currentColorType == ColorType.Purple)
         {
@@ -161,12 +164,12 @@ public class Player : MonoBehaviour
     public void HitPoint(ColorType point)
     {
         fishColor = point;
-        if(currentColorType == point)
+        if (currentColorType == point)
         {
             addScore = true;
         }
     }
-        private void ChangeColor()
+    private void ChangeColor()
     {
         switch (currentColorType)
         {
@@ -193,6 +196,6 @@ public class Player : MonoBehaviour
     }
     public void AddedScore()
     {
-        addScore=false;
+        addScore = false;
     }
 }
