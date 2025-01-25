@@ -1,9 +1,9 @@
 using UnityEngine;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 #if UNITY_EDITOR
+using System.Collections.ObjectModel;
 using System.Collections;
-using System.Collections.Generic;
 #endif
 
 /// <summary>

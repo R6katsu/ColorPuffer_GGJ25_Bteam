@@ -305,10 +305,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 669400051}
-  - component: {fileID: 669400047}
   - component: {fileID: 669400054}
   - component: {fileID: 669400053}
   - component: {fileID: 669400052}
+  - component: {fileID: 669400055}
   m_Layer: 0
   m_Name: TestPlayer
   m_TagString: Untagged
@@ -316,18 +316,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &669400047
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 669400046}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a37fdd0aec90d734dae63b6270d0d0de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &669400051
 Transform:
   m_ObjectHideFlags: 0
@@ -467,6 +455,26 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &669400055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 669400046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af780e2eb71e3c54b8ae0595e5a3de49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  horizonMoveSpeed: 5
+  verticalMoveSpeed: 5
+  rotationSpeed: 100
+  areaTop: 5
+  areaBottom: -5
+  areaRight: 5
+  areaLeft: -5
+  rb: {fileID: 669400052}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
