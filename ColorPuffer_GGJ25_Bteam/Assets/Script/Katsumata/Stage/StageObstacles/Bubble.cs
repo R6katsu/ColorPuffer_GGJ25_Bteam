@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEditor;
+
 
 #if UNITY_EDITOR
 using System.Collections.ObjectModel;
@@ -25,6 +27,9 @@ public class Bubble : MonoBehaviour, IObstacle
 
     [SerializeField, Header("自身の色の種類")]
     private ColorType _myColorType = ColorType.Default;
+
+    [SerializeField, Header("効果音再生用の情報")]
+    private PlaySEInfo _playSEInfo = new PlaySEInfo();
 
     [Tooltip("自身のRigidbody")]
     private Rigidbody2D _myRigidbody = null;
@@ -61,13 +66,23 @@ public class Bubble : MonoBehaviour, IObstacle
     /// <summary>
     /// PLに当たったらPLの色を変えて消える
     /// </summary>
-    public void HitObstacle(/* Player player */Transform player)
+    public void HitObstacle(Player player)
     {
-        Debug.Log("PLの色を_myColorTypeに変える");
+        // 泡を取得時の効果音を再生
+        AudioPlayManager.Instance.PlaySE2D
+        (
+            (int)_playSEInfo.mySENumber,
+            _playSEInfo.minPitch,
+            _playSEInfo.maxPitch,
+            _playSEInfo.volume
+        );
+
+        // PLの色を変更する
+        player.HitObstacle(_myColorType);
 
         // 非有効化後、吐き出されるまでPLの子オブジェクトになる
         gameObject.SetActive(false);
-        transform.parent = player;
+        transform.parent = player.transform;
         transform.localPosition = Vector2.zero;
     }
 }

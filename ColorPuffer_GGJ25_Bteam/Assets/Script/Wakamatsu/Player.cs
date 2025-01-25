@@ -121,7 +121,7 @@ public class Player : MonoBehaviour
     {
         if (other.gameObject.TryGetComponent(out IObstacle obstacles))
         {
-            obstacles.HitObstacle(this.transform);
+            obstacles.HitObstacle(this);
             isHit = true;
         }
         else
@@ -130,7 +130,7 @@ public class Player : MonoBehaviour
         }
         if (other.gameObject.TryGetComponent(out Bubble bubble))
         {
-            bubble.HitObstacle(bubbleColor);
+            bubble.HitObstacle(this);
             isHit = true;
         }
         else

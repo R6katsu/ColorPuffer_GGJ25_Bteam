@@ -23,6 +23,9 @@ public class PointFish : MonoBehaviour, IObstacle
     [SerializeField, Header("自身の色の種類")]
     private ColorType _myColorType = ColorType.Default;
 
+    [SerializeField, Header("効果音再生用の情報")]
+    private PlaySEInfo _playSEInfo = new PlaySEInfo();
+
     [Tooltip("自身のSpriteRenderer")]
     private SpriteRenderer _mySpriteRenderer = null;
 
@@ -46,8 +49,17 @@ public class PointFish : MonoBehaviour, IObstacle
     /// <summary>
     /// PLに当たったら吹き飛ぶ
     /// </summary>
-    public void HitObstacle(/* Player player */Transform player)
+    public void HitObstacle(Player player)
     {
+        // 吹き飛ぶ時の効果音を再生
+        AudioPlayManager.Instance.PlaySE2D
+        (
+            (int)_playSEInfo.mySENumber,
+            _playSEInfo.minPitch,
+            _playSEInfo.maxPitch,
+            _playSEInfo.volume
+        );
+
         // 移動量を初期化
         _myRigidbody.velocity = Vector2.zero;
 

@@ -199,3 +199,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 10
+  _myColorType: 0
+  _playSEInfo:
+    mySENumber: 2
+    minPitch: 0.9
+    maxPitch: 1.1
+    volume: 0.35

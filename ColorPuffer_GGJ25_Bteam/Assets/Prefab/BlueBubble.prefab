@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5639489667938415082}
   - component: {fileID: 3443877914533346760}
   - component: {fileID: 6083154416359240944}
+  - component: {fileID: 4994167322410542748}
   m_Layer: 0
   m_Name: BlueBubble
   m_TagString: Untagged
@@ -54,6 +55,11 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 67da392c03b984b4c9450256b954c7a1, type: 3}
   - {fileID: 21300000, guid: d645a36f912503846803dbd26b08bbde, type: 3}
   _myColorType: 2
+  _playSEInfo:
+    mySENumber: 1
+    minPitch: 1.15
+    maxPitch: 0.85
+    volume: 1.4
 --- !u!114 &8116504770260892629
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,3 +187,15 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &4994167322410542748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7934112328746817008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79be784dd05c1bf43b31d19c475a3877, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

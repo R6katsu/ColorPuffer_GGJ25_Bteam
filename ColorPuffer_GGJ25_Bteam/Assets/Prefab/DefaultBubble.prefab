@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6318351822826955205}
   - component: {fileID: 4989567318545457418}
   - component: {fileID: 586703275048521681}
+  - component: {fileID: 5163934944149989186}
   m_Layer: 0
   m_Name: DefaultBubble
   m_TagString: Untagged
@@ -54,6 +55,11 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 67da392c03b984b4c9450256b954c7a1, type: 3}
   - {fileID: 21300000, guid: d645a36f912503846803dbd26b08bbde, type: 3}
   _myColorType: 0
+  _playSEInfo:
+    mySENumber: 1
+    minPitch: 1.15
+    maxPitch: 0.85
+    volume: 1.4
 --- !u!114 &3712959026304861237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,3 +187,15 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &5163934944149989186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1943580572050616152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79be784dd05c1bf43b31d19c475a3877, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
