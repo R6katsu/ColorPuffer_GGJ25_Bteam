@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
         if(player.AddScore())
         {
             currentScore++;
+            Debug.Log(currentScore);
             player.AddedScore();
         }
         score.text = currentScore.ToString();

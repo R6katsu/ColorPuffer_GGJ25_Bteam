@@ -60,11 +60,22 @@ public class PointFish : MonoBehaviour, IObstacle
         // 助けられる場合のみ効果音を鳴らす
         if (isSuccess)
         {
-            Debug.Log("同じ色なら助けられる");
             // 吹き飛ぶ時の効果音を再生
             AudioPlayManager.Instance.PlaySE2D
             (
                 (int)_playSEInfo.mySENumber,
+                _playSEInfo.minPitch,
+                _playSEInfo.maxPitch,
+                _playSEInfo.volume
+            );
+            //スコア加算用
+            player.HitPoint(_myColorType);
+        }
+        else
+        {
+            AudioPlayManager.Instance.PlaySE2D
+            (
+                3,
                 _playSEInfo.minPitch,
                 _playSEInfo.maxPitch,
                 _playSEInfo.volume
@@ -89,4 +100,5 @@ public class PointFish : MonoBehaviour, IObstacle
 
         return isSuccess;
     }
+
 }
