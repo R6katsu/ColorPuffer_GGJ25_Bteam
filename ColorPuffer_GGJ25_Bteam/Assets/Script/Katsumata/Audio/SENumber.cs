@@ -5,5 +5,5 @@ public enum SENumber : int
     [Tooltip("初期値")] None,
     [Tooltip("泡")] Bubble,
     [Tooltip("決定ボタン41")] Button41,
-    [Tooltip("素振り")] Syu,
+    [Tooltip("小パンチ")] punch,
 }

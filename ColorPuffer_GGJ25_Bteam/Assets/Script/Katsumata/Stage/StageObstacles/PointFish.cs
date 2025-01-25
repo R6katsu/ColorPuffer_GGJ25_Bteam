@@ -68,6 +68,18 @@ public class PointFish : MonoBehaviour, IObstacle
                 _playSEInfo.maxPitch,
                 _playSEInfo.volume
             );
+            //スコア加算用
+            player.HitPoint(_myColorType);
+        }
+        else
+        {
+            AudioPlayManager.Instance.PlaySE2D
+            (
+                3,
+                _playSEInfo.minPitch,
+                _playSEInfo.maxPitch,
+                _playSEInfo.volume
+            );
         }
 
         // 移動量を初期化
@@ -88,4 +100,5 @@ public class PointFish : MonoBehaviour, IObstacle
 
         return isSuccess;
     }
+
 }

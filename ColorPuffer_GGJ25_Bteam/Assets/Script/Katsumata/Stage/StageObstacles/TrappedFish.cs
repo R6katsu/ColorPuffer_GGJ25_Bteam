@@ -98,6 +98,8 @@ public class TrappedFish : MonoBehaviour, IObstacle
     {
         // HELPED_COLORじゃなければ助けられない
         if (HELPED_COLOR != player.CurrentColorType) { return false; }
+        //スコア加算用
+        player.HitPoint(HELPED_COLOR);
 
         // 助けられた時の効果音を再生
         AudioPlayManager.Instance.PlaySE2D
