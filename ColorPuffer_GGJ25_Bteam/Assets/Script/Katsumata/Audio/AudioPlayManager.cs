@@ -108,6 +108,8 @@ public class AudioPlayManager : SingletonMonoBehaviour<AudioPlayManager>
             _lastSeTimes.Add(num, 0.0f);
         }
 
+        var seAudioSource = _seAudioSource;
+
         // 前回のSE再生から、待機時間を経過していない
         if (_lastSeTimes[num] + _lastSeSpan >= Time.time) { return; }
 
@@ -115,15 +117,18 @@ public class AudioPlayManager : SingletonMonoBehaviour<AudioPlayManager>
         float randomPitch = Random.Range(minPitch, maxPitch);
 
         // ピッチをランダム値に設定
-        _seAudioSource.pitch = randomPitch;
+        seAudioSource.pitch = randomPitch;
 
         // 音量
-        _seAudioSource.volume = volume;
+        seAudioSource.volume = volume;
 
         // SEを再生
-        _seAudioSource.PlayOneShot(_seClips[num]);
+        seAudioSource.PlayOneShot(_seClips[num]);
 
         // 最後のSEを再生した時間を更新
         _lastSeTimes[num] = Time.time;
+
+        // 設定を元に戻す
+        _seAudioSource = seAudioSource;
     }
 }
