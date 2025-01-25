@@ -36,6 +36,8 @@ public class Player : MonoBehaviour
     private Renderer big;
     [SerializeField]
     private Material[] color;
+    [SerializeField]
+    private PlaySEInfo _playSEInfo = new PlaySEInfo();
 
     private ColorType currentColorType = ColorType.Default;
     public ColorType CurrentColorType { get; private set; }
@@ -59,7 +61,6 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0)) { bubbleCount++; }
         movement = Vector2.zero;
         // “ü—Í’l‚ðŽæ“¾
         moveX = Input.GetAxis("Horizontal");
@@ -70,6 +71,8 @@ public class Player : MonoBehaviour
         rb.velocity = movement;
         if (bubbleCount <= 2)
         {
+            smallPuffer.SetActive(true);
+            bigPuffer.SetActive(false);
         }
         else
         {
@@ -77,6 +80,7 @@ public class Player : MonoBehaviour
             bigPuffer.SetActive(true);
         }
         ChangeColor();
+        CurrentColorType = currentColorType;
     }
     private void Move() //ˆÚ“®
     {
@@ -136,6 +140,13 @@ public class Player : MonoBehaviour
         else if (other.gameObject.TryGetComponent(out IObstacle obstacles))
         {
             obstacles.HitObstacle(this);
+            AudioPlayManager.Instance.PlaySE2D
+       (
+           (int)_playSEInfo.mySENumber,
+           _playSEInfo.minPitch,
+           _playSEInfo.maxPitch,
+           _playSEInfo.volume
+       );
             currentColorType = ColorType.Default;
             bubbleCount = 0;
         }
