@@ -1,6 +1,5 @@
-using UnityEngine;
-
 #if UNITY_EDITOR
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 #endif
@@ -13,5 +12,5 @@ public interface IObstacle
     /// <summary>
     /// è·äQï®Ç…ìñÇΩÇ¡ÇΩ
     /// </summary>
-    public void HitObstacle(Player player);
+    public bool HitObstacle(Player player);
 }
