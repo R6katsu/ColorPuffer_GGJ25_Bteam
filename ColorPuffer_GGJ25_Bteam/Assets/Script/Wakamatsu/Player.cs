@@ -9,7 +9,9 @@ public class Player : MonoBehaviour
     [Tooltip("縦移動速度")]
     [SerializeField] private float verticalMoveSpeed = 5f;
     [Tooltip("回転速度")]
-    [SerializeField] private float rotationSpeed = 100f;
+    [SerializeField] private float rotationSpeed = 200f;
+    [Tooltip("戻る速度")]
+    [SerializeField] private float resetSpeed = 200f;
     [Tooltip("範囲指定（上）")]
     [SerializeField] private float areaTop = 5;
     [Tooltip("範囲指定（下）")]
@@ -19,23 +21,30 @@ public class Player : MonoBehaviour
     [Tooltip("範囲指定（左）")]
     [SerializeField] private float areaLeft = -5;
 
-    private float upperLimit = 60f, lowerLimit = -60f;
+    private static float upperLimit = 60f, lowerLimit = -60f;
    
 
     [SerializeField]
     private Rigidbody2D rb;
     [SerializeField]
-    private SpriteRenderer spriteRenderer;
+    private GameObject smallPuffer;
     [SerializeField]
-    private Sprite[] color;
+    private GameObject bigPuffer;
+    [SerializeField]
+    private Renderer small;
+    [SerializeField]
+    private Renderer big;
+    [SerializeField]
+    private Material[] color;
 
     private ColorType currentColorType = ColorType.Default;
+    public ColorType CurrentColorType { get; private set; }
+
     private ColorType bubbleColor = ColorType.Default;
-    private bool isHit = false;
+    private ColorType fishColor = ColorType.Default;
 
-
-
-
+    private int bubbleCount = 0;
+    private bool addScore = false;
     private Vector3 movement;
     private float moveX, moveY;
     private float rotationAmount;
@@ -44,10 +53,13 @@ public class Player : MonoBehaviour
     void Start()
     {
         originalRotation = transform.rotation;
+        smallPuffer.SetActive(true);
+        bigPuffer.SetActive(false);
     }
 
     void Update()
     {
+        if(Input.GetMouseButtonDown(0)) { bubbleCount++; }
         movement = Vector2.zero;
         // 入力値を取得
         moveX = Input.GetAxis("Horizontal");
@@ -56,17 +68,13 @@ public class Player : MonoBehaviour
         Move(); //移動
         Rotation();
         rb.velocity = movement;
-        if(Input.GetKeyDown(KeyCode.I))
+        if(bubbleCount <= 2)
         {
-            currentColorType = ColorType.Red;
         }
-        if (Input.GetKeyDown(KeyCode.O))
+        else
         {
-            currentColorType = ColorType.Blue;
-        }
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            currentColorType = ColorType.Purple;
+            smallPuffer.SetActive(false);
+            bigPuffer.SetActive(true);
         }
         ChangeColor();
     }
@@ -114,29 +122,26 @@ public class Player : MonoBehaviour
         }
         else
         {
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, originalRotation, rotationSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, originalRotation, resetSpeed * Time.deltaTime);
         }
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.TryGetComponent(out IObstacle obstacles))
-        {
-            obstacles.HitObstacle(this.transform);
-            isHit = true;
-        }
-        else
-        {
-            isHit = false;
-        }
-        if (other.gameObject.TryGetComponent(out Bubble bubble))
-        {
-            bubble.HitObstacle(bubbleColor);
-            isHit = true;
-        }
-        else
-        {
-            isHit = false;
-        }
+        //if (other.gameObject.TryGetComponent(out IObstacle obstacles))
+        //{
+        //    obstacles.HitObstacle(this);
+        //    currentColorType = ColorType.Default;
+        //    bubbleCount = 0;
+        //}
+        //if (other.gameObject.TryGetComponent(out Bubble bubble))
+        //{
+        //    bubble.HitObstacle(bubbleColor);
+        //    bubbleCount++;
+        //}
+        //if (other.gameObject.TryGetComponent(out PointFish point))
+        //{
+        //    point.HitObstacle(fishColor);
+        //}
     }
     public void HitObstacle(ColorType bubble)
     {
@@ -145,7 +150,7 @@ public class Player : MonoBehaviour
         {
             currentColorType = ColorType.Purple;
         }
-        else if (bubbleColor == ColorType.Default)
+        else if (currentColorType == ColorType.Purple)
         {
         }
         else
@@ -153,26 +158,41 @@ public class Player : MonoBehaviour
             currentColorType = bubbleColor;
         }
     }
+    public void HitPoint(ColorType point)
+    {
+        fishColor = point;
+        if(currentColorType == point)
+        {
+            addScore = true;
+        }
+    }
         private void ChangeColor()
     {
-        //switch (currentColorType)
-        //{
-        //    case ColorType.Default:
-        //        spriteRenderer.sprite = color[0];
-        //        break;
-        //    case ColorType.Red:
-        //        spriteRenderer.sprite = color[1];
-        //        break;
-        //    case ColorType.Blue:
-        //        spriteRenderer.sprite = color[2];
-        //        break;
-        //    case ColorType.Purple:
-        //        spriteRenderer.sprite = color[3]; 
-        //        break;
-        //}
+        switch (currentColorType)
+        {
+            case ColorType.Default:
+                small.material = color[0];
+                break;
+            case ColorType.Red:
+                small.material = color[1];
+                big.material = color[1];
+                break;
+            case ColorType.Blue:
+                small.material = color[2];
+                big.material = color[2];
+                break;
+            case ColorType.Purple:
+                small.material = color[3];
+                big.material = color[3];
+                break;
+        }
     }
-    public bool IsHit()
+    public bool AddScore()
     {
-        return isHit;
+        return addScore;
+    }
+    public void AddedScore()
+    {
+        addScore=false;
     }
 }
