@@ -17,6 +17,9 @@ using UnityEngine.Experimental.GlobalIllumination;
 
 public class TrappedFish : MonoBehaviour, IObstacle
 {
+    [Tooltip("助けるのに必要な色")]
+    private const ColorType HELPED_COLOR = ColorType.Purple;
+
     [Tooltip("釣り人の位置の高さ")]
     private static readonly Vector2 _anglerHeight = Vector2.up * 20;
 
@@ -29,8 +32,8 @@ public class TrappedFish : MonoBehaviour, IObstacle
     [SerializeField, Min(0.0f), Header("逃げる速度")]
     private float _speed = 0.0f;
 
-    [Tooltip("助けるのに必要な色")]
-    private const ColorType HELPED_COLOR = ColorType.Purple;
+    [SerializeField, Header("効果音再生用の情報")]
+    private PlaySEInfo _playSEInfo = new PlaySEInfo();
 
     [Tooltip("自身のLineRenderer")]
     private LineRenderer _myLineRenderer = null;
@@ -91,9 +94,18 @@ public class TrappedFish : MonoBehaviour, IObstacle
     /// <summary>
     /// PLに当たったら釣り針から助けられる
     /// </summary>
-    public void HitObstacle(/* Player player */Transform player)
+    public void HitObstacle(Player player)
     {
         //if (HELPED_COLOR != /* PLの色 */) { return; }
+
+        // 助けられた時の効果音を再生
+        AudioPlayManager.Instance.PlaySE2D
+        (
+            (int)_playSEInfo.mySENumber,
+            _playSEInfo.minPitch,
+            _playSEInfo.maxPitch,
+            _playSEInfo.volume
+        );
 
         // 逃走のフラグを立てる
         _isFlight = true;

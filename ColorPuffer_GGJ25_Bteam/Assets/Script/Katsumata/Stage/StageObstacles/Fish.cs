@@ -19,6 +19,9 @@ public class Fish : MonoBehaviour, IObstacle
     [SerializeField, Min(0.0f), Header("ˆÚ“®‘¬“x")]
     private float _speed = 0.0f;
 
+    [SerializeField, Header("Œø‰Ê‰¹Ä¶—p‚Ìî•ñ")]
+    private PlaySEInfo _playSEInfo = new PlaySEInfo();
+
     private Rigidbody2D _myRigidbody = null;
 
     private void OnEnable()
@@ -30,8 +33,17 @@ public class Fish : MonoBehaviour, IObstacle
     /// <summary>
     /// PL‚É“–‚½‚Á‚½‚çPL‚©‚ç“¦‚°‚é
     /// </summary>
-    public void HitObstacle(/* Player player */Transform player)
+    public void HitObstacle(Player player)
     {
+        // ¬“Ë‚©‚ê‚½‚ÌŒø‰Ê‰¹‚ğÄ¶
+        AudioPlayManager.Instance.PlaySE2D
+        (
+            (int)_playSEInfo.mySENumber,
+            _playSEInfo.minPitch,
+            _playSEInfo.maxPitch,
+            _playSEInfo.volume
+        );
+
         // ˆÚ“®—Ê‚ğ‰Šú‰»
         _myRigidbody.velocity = Vector2.zero;
 

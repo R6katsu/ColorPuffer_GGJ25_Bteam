@@ -13,5 +13,5 @@ public interface IObstacle
     /// <summary>
     /// è·äQï®Ç…ìñÇΩÇ¡ÇΩ
     /// </summary>
-    public void HitObstacle(/* Player player */Transform player);
+    public void HitObstacle(Player player);
 }
