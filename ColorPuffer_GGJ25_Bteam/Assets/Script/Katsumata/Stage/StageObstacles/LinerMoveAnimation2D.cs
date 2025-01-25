@@ -7,19 +7,6 @@ using System.Collections.Generic;
 #endif
 
 /// <summary>
-/// 経由、または終了地点の座標と到達時間
-/// </summary>
-[Serializable]
-public struct KeyFrameInfo
-{
-    [Header("経由、または終了地点の座標")]
-    public Vector2 keyPosition;
-
-    [Min(0.0f), Header("経由、または終了地点に到達する時間")]
-    public float keyPositionKetTime;
-}
-
-/// <summary>
 /// 直線移動のAnimationClipを作成し、再生する（2D）
 /// </summary>
 [RequireComponent(typeof(Animation))]
@@ -40,8 +27,14 @@ public class LinerMoveAnimation2D : MonoBehaviour
     [SerializeField, Min(0.0f), Header("往復終了時間")]
     private float _endTime = 0.0f;
 
-    [SerializeField, Header("経由、または終了地点の座標と到達時間の配列")]
-    private KeyFrameInfo[] _keyPositions = null;
+    [SerializeField, Header("開始地点の座標")]
+    private Vector2 _startPosition = Vector2.zero;
+
+    [SerializeField, Header("経由、または終了地点の座標")]
+    public Vector2 _keyPosition = Vector2.zero;
+
+    [SerializeField, Min(0.0f), Header("経由、または終了地点に到達する時間")]
+    public float _keyPositionKetTime = 0.0f;
 
     [Tooltip("自身のAnimation")]
     private Animation _myAnimation = null;
@@ -49,19 +42,58 @@ public class LinerMoveAnimation2D : MonoBehaviour
     [Tooltip("作成したAnimationClip")]
     private AnimationClip _animationClip = null;
 
-    [Tooltip("開始地点の座標")]
-    private Vector2 _startPosition = Vector2.zero;
-
     [Tooltip("AnimationCurveのLinear")]
     private AnimationCurve _linearX = null;
 
     [Tooltip("AnimationCurveのLinear")]
     private AnimationCurve _linearY = null;
 
-    private void OnEnable()
+    /// <summary>
+    /// 開始時の処理
+    /// </summary>
+    public Action StartEvent
     {
-        // 現在の位置を開始地点に設定
-        _startPosition = transform.position;
+        set
+        {
+            var startEvent = new AnimationEvent()
+            {
+                time = 0.0f,
+                functionName = value.Method.Name
+            };
+            var endEvent = new AnimationEvent()
+            {
+                time = _endTime,
+                functionName = value.Method.Name
+            };
+
+            // AnimationClipを作成
+            _animationClip = (_animationClip == null) ? new AnimationClip() : _animationClip;
+
+            // 開始時の処理を設定
+            _animationClip.AddEvent(startEvent);
+            _animationClip.AddEvent(endEvent);
+        }
+    }
+
+    /// <summary>
+    /// 終了時の処理
+    /// </summary>
+    public Action EndEvent
+    {
+        set
+        {
+            var endEvent = new AnimationEvent()
+            {
+                time = _keyPositionKetTime,
+                functionName = value.Method.Name
+            };
+
+            // AnimationClipを作成
+            _animationClip = (_animationClip == null) ? new AnimationClip() : _animationClip;
+
+            // 終了時の処理を設定
+            _animationClip.AddEvent(endEvent);
+        }
     }
 
     private void Start()
@@ -70,7 +102,7 @@ public class LinerMoveAnimation2D : MonoBehaviour
         TryGetComponent(out _myAnimation);
 
         // AnimationClipを作成
-        _animationClip = new AnimationClip();
+        _animationClip = (_animationClip == null) ? new AnimationClip() : _animationClip;
 
         //アニメーションクリップ単体で操作するための設定
         _animationClip.legacy = true;
@@ -81,19 +113,18 @@ public class LinerMoveAnimation2D : MonoBehaviour
         _linearY = AnimationCurve.Linear(0.0f, _startPosition.y, _endTime, _startPosition.y);
 
         // キーフレームの設定を作成
-        foreach (var keyPosition in _keyPositions)
-        {
-            //引数（時間、値）
-            Keyframe keyX = new Keyframe(keyPosition.keyPositionKetTime, keyPosition.keyPosition.x);
-            Keyframe keyY = new Keyframe(keyPosition.keyPositionKetTime, keyPosition.keyPosition.y);
+        //引数（時間、値）
+        Keyframe keyX = new Keyframe(_keyPositionKetTime, _keyPosition.x);
+        Keyframe keyY = new Keyframe(_keyPositionKetTime, _keyPosition.y);
 
-            // アニメーションカーブにキーフレームを追加
-            _linearX.AddKey(keyX);
-            _linearY.AddKey(keyY);
-        }
+        // アニメーションカーブにキーフレームを追加
+        _linearX.AddKey(keyX);
+        _linearY.AddKey(keyY);
 
         // AnimationCurveを設定
-        SetCurve();
+        //引数（パスの指定、タイプ、操作項目名、アニメーションカーブ）
+        _animationClip.SetCurve("", typeof(Transform), LOCAL_POSITION_X, _linearX);
+        _animationClip.SetCurve("", typeof(Transform), LOCAL_POSITION_Y, _linearY);
 
         // ラップモードの設定
         _animationClip.wrapMode = _wapMode;
@@ -105,12 +136,10 @@ public class LinerMoveAnimation2D : MonoBehaviour
     }
 
     /// <summary>
-    /// AnimationCurveを設定
+    /// アニメーションを終了する
     /// </summary>
-    private void SetCurve()
+    public void DisableAnimation()
     {
-        //引数（パスの指定、タイプ、操作項目名、アニメーションカーブ）
-        _animationClip.SetCurve("", typeof(Transform), LOCAL_POSITION_X, _linearX);
-        _animationClip.SetCurve("", typeof(Transform), LOCAL_POSITION_Y, _linearY);
+        _myAnimation.Stop();
     }
 }

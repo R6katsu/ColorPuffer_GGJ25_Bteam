@@ -20,6 +20,9 @@ public class ScrollObstacle : MonoBehaviour
     {
         // RequireComponent
         TryGetComponent(out _myRigidbody);
+
+        // d—Í‚ğ–³Œø‰»
+        _myRigidbody.gravityScale = 0.0f;
     }
 
     private void FixedUpdate()
