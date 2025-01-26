@@ -62,11 +62,8 @@ public class GameManager : MonoBehaviour
 
         }
         time.text = Mathf.Ceil(countdownTime).ToString(); //時間テキスト描写
-        if(player.AddScore()) //スコア加算
-        {
-            currentScore++;
-            player.AddedScore();
-        }
+        currentScore += player.score;
+        player.score = 0;
         score.text = currentScore.ToString(); //スコアテキスト描写
     }
     private void CameraControl()
@@ -78,10 +75,6 @@ public class GameManager : MonoBehaviour
     public static int getscore()
     {
         return totalScore;
-    }
-    public void ResetScore()
-    {
-        totalScore = 0;
     }
     public void IsStart() //起動用（仮）
     {
