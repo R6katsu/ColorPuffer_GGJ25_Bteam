@@ -95,29 +95,28 @@ public class StageManager : MonoBehaviour
     [Tooltip("生成する泡の配列")]
     private List<Transform> _bubblePrefabs = null;
 
+    [Tooltip("発生するステージイベントの配列")]
+    private List<IStageEvent> _stageEvents = null;
+
     [Tooltip("前回生成した位置")]
     private Vector2 _lastSpawnPoint = Vector2.zero;
 
     [Tooltip("生成したEntityのリスト")]
     private List<Transform> _entitys = null;
 
-    [Tooltip("生成位置を上書きする生成位置の配列")]
+    [Tooltip("生成位置を上書きする")]
     private Vector2[] _overrideSpawnPoints = null;
+
+    [Tooltip("生成する障害物を上書きする")]
+    private Transform[] _overrideObstaclePrefabs = null;
+
+    [Tooltip("障害物を生成する間隔を上書きする")]
+    private float _overrideObstacleSpawnSpan = 0.0f;
 
     /// <summary>
     /// 読み取り専用の生成したEntityのリスト
     /// </summary>
     public ReadOnlyCollection<Transform> Entitys { get => new(_entitys); }
-
-    /*
-    public MoveRestrictions a = null;
-    private IEnumerator Start()
-    {
-        yield return new WaitForSeconds(5);
-        a.StageEvent(this);
-    }
-    */
-
 
     private void OnEnable()
     {
@@ -126,6 +125,7 @@ public class StageManager : MonoBehaviour
         _itemPrefabs = new();
         _bubblePrefabs = new();
         _entitys = new();
+        _stageEvents = new();
 
         // GenerationProbabilityを使って生成対象の配列を作成する
         foreach (var generationProbability in _generationProbabilitys)
@@ -162,10 +162,33 @@ public class StageManager : MonoBehaviour
 
         // 障害物、アイテムを生成
         StartCoroutine(RandomPrefabSpawner(_obstaclePrefabs.ToArray(), _obstacleSpawnSpan));
-        StartCoroutine(RandomPrefabSpawner(_itemPrefabs.ToArray(), _itemSpawnSpan));
+        // アイテム実装してない
+        //StartCoroutine(RandomPrefabSpawner(_itemPrefabs.ToArray(), _itemSpawnSpan));
 
         // 泡を生成
         StartCoroutine(RandomBubbleSpawner(_bubblePrefabs.ToArray(), _bubbleSpawnSpan));
+
+        // 発生するステージイベントの配列を作成
+        List<IStageEvent> istageEvents = new();
+        foreach (var n in GameObject.FindObjectsOfType<Component>())
+        {
+            var component = n as IStageEvent;
+            if (component != null)
+            {
+                istageEvents.Add(component);
+            }
+        }
+
+        foreach (var istageEvent in istageEvents)
+        {
+            for (int i = 0; i < istageEvent.EventProbability; i++)
+            {
+                _stageEvents.Add(istageEvent);
+            }
+        }
+
+        var stageEvent = _stageEvents[Random.Range(0, _stageEvents.Count)];
+        StartCoroutine(stageEvent.StageEvent(this));
     }
 
     private void Update()
@@ -225,10 +248,15 @@ public class StageManager : MonoBehaviour
         {
             yield return new WaitForSeconds(span);
 
+            Debug.Log(span);
+
             // 生成位置の上書きがnullだったら通常の生成位置を使用
             var spawnPoints = (_overrideSpawnPoints == null) ? _spawnPointsInfo.spawnPoints.ToArray() : _overrideSpawnPoints;
 
-            var entity = SpawnRandomPrefab(prefabs, spawnPoints);
+            // 生成する障害物の上書きがnullだったら通常の生成する障害物を使用
+            var obstaclePrefabs = (_overrideObstaclePrefabs == null) ? _obstaclePrefabs.ToArray() : _overrideObstaclePrefabs;
+
+            var entity = SpawnRandomPrefab(obstaclePrefabs, spawnPoints);
 
             // まだ含まれていなければ追加
             AddEntitys(entity);
@@ -354,4 +382,26 @@ public class StageManager : MonoBehaviour
     /// 生成位置の上書きを終了
     /// </summary>
     public void ResetOverrideSpawnPoints() => _overrideSpawnPoints = null;
+
+    /// <summary>
+    /// 生成する障害物を上書き
+    /// </summary>
+    /// <param name="overrideObstaclePrefabs"></param>
+    public void OverrideObstaclePrefabs(Transform[] overrideObstaclePrefabs) => _overrideObstaclePrefabs = overrideObstaclePrefabs;
+
+    /// <summary>
+    /// 生成する障害物の上書きを終了
+    /// </summary>
+    public void ResetObstaclePrefabs() => _overrideObstaclePrefabs = null;
+
+    /// <summary>
+    /// 障害物を生成する間隔を上書き
+    /// </summary>
+    /// <param name="overrideObstacleSpawnSpan"></param>
+    public void OverrideObstacleSpawnSpan(float overrideObstacleSpawnSpan) => _overrideObstacleSpawnSpan = overrideObstacleSpawnSpan;
+
+    /// <summary>
+    /// 障害物を生成する間隔を上書きを終了
+    /// </summary>
+    public void ResetOverrideObstacleSpawnSpan() => _overrideObstacleSpawnSpan = 0.0f;
 }
