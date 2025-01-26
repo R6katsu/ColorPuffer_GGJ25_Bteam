@@ -24,11 +24,14 @@ public class TrappedFish : MonoBehaviour, IObstacle
     [Tooltip("釣り人の位置の高さ")]
     private static readonly Vector2 _anglerHeight = Vector2.up * 20;
 
+    [SerializeField, Min(0), Header("救助成功時の得点")]
+    private int _point = 0;
+
     [SerializeField, Header("釣り人の位置")]
     private Transform _anglerPoint = null;
 
-    [SerializeField, Header("自身のSpriteRenderer")]
-    private SpriteRenderer _mySpriteRenderer = null;
+    [SerializeField, Header("自身のMeshRenderer")]
+    private MeshRenderer _myMeshRenderer = null;
 
     [SerializeField, Min(0.0f), Header("逃げる速度")]
     private float _speed = 0.0f;
@@ -78,19 +81,23 @@ public class TrappedFish : MonoBehaviour, IObstacle
         // アニメーション開始時、終了時の処理を設定
         _myLinerMoveAnimation2D.StartEvent = () =>
         {
-            _mySpriteRenderer.flipX = false;
+            var localScale = _myMeshRenderer.transform.localScale;
+            localScale.x = 1;
+            _myMeshRenderer.transform.localScale = localScale;
 
-            var localPosition = _mySpriteRenderer.transform.localPosition;
-            localPosition.x = 0.5f;
-            _mySpriteRenderer.transform.localPosition = localPosition;
+            var localPosition = _myMeshRenderer.transform.localPosition;
+            localPosition.x = 0.4f;
+            _myMeshRenderer.transform.localPosition = localPosition;
         };
         _myLinerMoveAnimation2D.EndEvent = () =>
         {
-            _mySpriteRenderer.flipX = true;
+            var localScale = _myMeshRenderer.transform.localScale;
+            localScale.x = -1;
+            _myMeshRenderer.transform.localScale = localScale;
 
-            var localPosition = _mySpriteRenderer.transform.localPosition;
-            localPosition.x = -0.5f;
-            _mySpriteRenderer.transform.localPosition = localPosition;
+            var localPosition = _myMeshRenderer.transform.localPosition;
+            localPosition.x = -0.4f;
+            _myMeshRenderer.transform.localPosition = localPosition;
         };
     }
 
@@ -110,10 +117,10 @@ public class TrappedFish : MonoBehaviour, IObstacle
     /// <summary>
     /// PLに当たったら釣り針から助けられる
     /// </summary>
-    public bool HitObstacle(Player player)
+    public (bool, int) HitObstacle(Player player)
     {
         // HELPED_COLORじゃなければ助けられない
-        if (HELPED_COLOR != player.CurrentColorType) { return false; }
+        if (HELPED_COLOR != player.CurrentColorType) { return (false, 0); }
         //スコア加算用
         player.HitPoint(HELPED_COLOR);
 
@@ -145,7 +152,7 @@ public class TrappedFish : MonoBehaviour, IObstacle
         // 釣り糸をフィードアウト
         StartCoroutine(LineFeedOut());
 
-        return true;
+        return (true, _point);
     }
 
     /// <summary>

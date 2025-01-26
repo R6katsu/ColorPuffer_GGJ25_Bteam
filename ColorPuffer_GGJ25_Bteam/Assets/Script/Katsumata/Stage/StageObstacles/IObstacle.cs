@@ -13,7 +13,7 @@ public interface IObstacle : IDisposable
     /// <summary>
     /// áŠQ•¨‚É“–‚½‚Á‚½
     /// </summary>
-    public bool HitObstacle(Player player);
+    public (bool, int) HitObstacle(Player player);
 
     /// <summary>
     /// íœ‚Ìˆ—

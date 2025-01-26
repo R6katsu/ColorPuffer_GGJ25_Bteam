@@ -18,6 +18,9 @@ using Unity.VisualScripting;
 [RequireComponent(typeof(ObstaclesMovementRange))]
 public class Fish : MonoBehaviour, IObstacle
 {
+    [SerializeField, Min(0), Header("‹~•¬Œ÷‚Ì“¾“_")]
+    private int _point = 0;
+
     [SerializeField, Min(0.0f), Header("ˆÚ“®‘¬“x")]
     private float _speed = 0.0f;
 
@@ -47,7 +50,7 @@ public class Fish : MonoBehaviour, IObstacle
     /// <summary>
     /// PL‚É“–‚½‚Á‚½‚çPL‚©‚ç“¦‚°‚é
     /// </summary>
-    public bool HitObstacle(Player player)
+    public (bool, int) HitObstacle(Player player)
     {
         // ˆÚ“®—Ê‚ğ‰Šú‰»
         _myRigidbody.velocity = Vector2.zero;
@@ -60,7 +63,7 @@ public class Fish : MonoBehaviour, IObstacle
         StartCoroutine(Escape());
 
         // â‘Î‚Éfalse‚ğ•Ô‚·¬‹›
-        return false;
+        return (false, _point);
     }
 
     /// <summary>

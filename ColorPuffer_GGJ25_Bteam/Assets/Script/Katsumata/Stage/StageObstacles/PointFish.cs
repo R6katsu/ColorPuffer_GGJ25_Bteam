@@ -10,7 +10,6 @@ using System.Collections;
 /// ポイント対象の魚
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(ObstaclesMovementRange))]
 [RequireComponent(typeof(ScrollObstacle))]
 public class PointFish : MonoBehaviour, IObstacle
@@ -21,6 +20,9 @@ public class PointFish : MonoBehaviour, IObstacle
         { ColorType.Blue, Color.blue }
     };
 
+    [SerializeField, Min(0), Header("救助成功時の得点")]
+    private int _point = 0;
+
     [SerializeField, Min(0.0f), Header("吹き飛ぶ速度")]
     private float _speed = 0.0f;
 
@@ -29,9 +31,6 @@ public class PointFish : MonoBehaviour, IObstacle
 
     [SerializeField, Header("効果音再生用の情報")]
     private PlaySEInfo _playSEInfo = new PlaySEInfo();
-
-    [Tooltip("自身のSpriteRenderer")]
-    private SpriteRenderer _mySpriteRenderer = null;
 
     [Tooltip("自身のRigidbody2D")]
     private Rigidbody2D _myRigidbody = null;
@@ -58,17 +57,13 @@ public class PointFish : MonoBehaviour, IObstacle
     {
         // RequireComponent
         TryGetComponent(out _myRigidbody);
-        TryGetComponent(out _mySpriteRenderer);
         TryGetComponent(out _myScrollObstacle);
-
-        // 自身の色の種類に紐づけられた色に変更
-        _mySpriteRenderer.color = (_fishColors.ContainsKey(_myColorType)) ? _fishColors[_myColorType] : _mySpriteRenderer.color;
     }
 
     /// <summary>
     /// PLに当たったら吹き飛ぶ
     /// </summary>
-    public bool HitObstacle(Player player)
+    public (bool, int) HitObstacle(Player player)
     {
         // 同じ色なら助けられる
         var isSuccess = _myColorType == player.CurrentColorType;
@@ -80,18 +75,6 @@ public class PointFish : MonoBehaviour, IObstacle
             AudioPlayManager.Instance.PlaySE2D
             (
                 (int)_playSEInfo.mySENumber,
-                _playSEInfo.minPitch,
-                _playSEInfo.maxPitch,
-                _playSEInfo.volume
-            );
-            //スコア加算用
-            player.HitPoint(_myColorType);
-        }
-        else
-        {
-            AudioPlayManager.Instance.PlaySE2D
-            (
-                3,
                 _playSEInfo.minPitch,
                 _playSEInfo.maxPitch,
                 _playSEInfo.volume
@@ -114,7 +97,7 @@ public class PointFish : MonoBehaviour, IObstacle
         var dir = transform.position - player.transform.position;
         _myRigidbody.AddForce(dir * _speed, ForceMode2D.Impulse);
 
-        return isSuccess;
+        return (isSuccess, _point);
     }
 
 }
