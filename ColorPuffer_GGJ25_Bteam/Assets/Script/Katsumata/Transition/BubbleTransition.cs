@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 /// 泡のトランジション
 /// </summary>
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(TransitionHelper))]
 public class BubbleTransition : MonoBehaviour, ITransition
 {
     [Tooltip("アニメーションの長さの最大値")]

@@ -8,7 +8,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: BubbleTransitionEnd
-  m_Speed: 1.38
+  m_Speed: 2.16
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -5479143046370226952}

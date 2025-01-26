@@ -22,7 +22,7 @@ public enum SpawnType : byte
 /// 生成位置の情報
 /// </summary>
 [Serializable]
-public struct SpawnPointsInfo
+internal struct SpawnPointsInfo
 {
     [Header("左の生成位置")]
     public Vector2 leftPoint;
@@ -38,7 +38,7 @@ public struct SpawnPointsInfo
 /// 生成確率
 /// </summary>
 [Serializable]
-public struct GenerationProbability
+internal struct GenerationProbability
 {
     [Header("生成するPrefab")]
     public Transform prefab;
@@ -56,10 +56,16 @@ public struct GenerationProbability
 public class StageManager : MonoBehaviour
 {
     [Tooltip("泡を生成する高さ")]
-    private static readonly Vector2 _bubbleSpawnHeight = Vector2.down * 5;
+    private static readonly Vector2 _bubbleSpawnHeight = Vector2.down * 6;
+
+    [Tooltip("背景の泡を生成する奥行")]
+    private static readonly Vector2 _backGroundBubbleSpawnDeep = Vector3.forward * 3;
 
     [SerializeField, Header("生成対象、生成確率、代入先の配列の種類")]
     private GenerationProbability[] _generationProbabilitys = null;
+
+    [SerializeField, Header("背景の泡")]
+    private Transform _backGroundBubblePrefab = null;
 
     [SerializeField, Min(0.0f), Header("障害物を生成する間隔")]
     private float _obstacleSpawnSpan = 0.0f;
@@ -76,6 +82,9 @@ public class StageManager : MonoBehaviour
     [SerializeField, Header("泡の生成位置の情報")]
     private SpawnPointsInfo _bubbleSpawnPointsInfo = new();
 
+    [SerializeField, Header("背景のAnimator配列")]
+    private Animator[] _backGroundAnimators = null;
+
     [Tooltip("生成する障害物の配列")]
     private List<Transform> _obstaclePrefabs = null;
 
@@ -84,6 +93,9 @@ public class StageManager : MonoBehaviour
 
     [Tooltip("生成する泡の配列")]
     private List<Transform> _bubblePrefabs = null;
+
+    [Tooltip("前回生成した位置")]
+    private Vector2 _lastSpawnPoint = Vector2.zero;
 
     private void OnEnable()
     {
@@ -133,6 +145,14 @@ public class StageManager : MonoBehaviour
         StartCoroutine(RandomBubbleSpawner(_bubblePrefabs.ToArray(), _bubbleSpawnSpan));
     }
 
+    private void Update()
+    {
+        foreach (var backGroundAnimator in _backGroundAnimators)
+        {
+            backGroundAnimator.enabled = ScrollUtility.IsScroll;
+        }
+    }
+
     /// <summary>
     /// 生成位置の情報を初期化
     /// </summary>
@@ -145,17 +165,33 @@ public class StageManager : MonoBehaviour
         spawnPointsInfo.spawnPoints.Add(_spawnPointsInfo.leftPoint);
         spawnPointsInfo.spawnPoints.Add(_spawnPointsInfo.rightPoint);
 
-        // 左右の生成位置を活用して間の生成位置を計算、リスト化
+        // 左右の生成位置を活用して間の生成位置を計算
         var centerPoint = (spawnPointsInfo.leftPoint + _spawnPointsInfo.rightPoint).Halve();
+        var leftSpacerPoint = (_spawnPointsInfo.leftPoint + centerPoint).Halve();
+        var rightSpacerPoint = (_spawnPointsInfo.rightPoint + centerPoint).Halve();
+
+        // リストに追加
         spawnPointsInfo.spawnPoints.Add(centerPoint);
-        spawnPointsInfo.spawnPoints.Add((_spawnPointsInfo.leftPoint + centerPoint).Halve());
-        spawnPointsInfo.spawnPoints.Add((_spawnPointsInfo.rightPoint + centerPoint).Halve());
+        spawnPointsInfo.spawnPoints.Add(leftSpacerPoint);
+        spawnPointsInfo.spawnPoints.Add(rightSpacerPoint);
+
+        // 更に細分化
+        var spacerLeftSpacerPoint = (_spawnPointsInfo.leftPoint + leftSpacerPoint).Halve();
+        var spacerRightSpacerPoint = (_spawnPointsInfo.rightPoint + rightSpacerPoint).Halve();
+        var centerSpacerLeftSpacerPoint = (centerPoint + leftSpacerPoint).Halve();
+        var centerSpacerRightSpacerPoint = (centerPoint + rightSpacerPoint).Halve();
+
+        // リストに追加
+        spawnPointsInfo.spawnPoints.Add(spacerLeftSpacerPoint);
+        spawnPointsInfo.spawnPoints.Add(spacerRightSpacerPoint);
+        spawnPointsInfo.spawnPoints.Add(centerSpacerLeftSpacerPoint);
+        spawnPointsInfo.spawnPoints.Add(centerSpacerRightSpacerPoint);
 
         return spawnPointsInfo;
     }
 
     /// <summary>
-    /// 
+    /// 障害物のスポナー
     /// </summary>
     /// <param name="prefabs"></param>
     /// <param name="span"></param>
@@ -171,7 +207,7 @@ public class StageManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// 泡のスポナー
     /// </summary>
     /// <param name="prefabs"></param>
     /// <param name="span"></param>
@@ -182,7 +218,11 @@ public class StageManager : MonoBehaviour
         {
             yield return new WaitForSeconds(span);
 
+            // ランダムな泡をランダムな位置に生成
             SpawnRandomBubble(prefabs);
+
+            // 背景の泡を背景のランダムな位置に生成
+            SpawnRandomBackGroundBubble();
         }
     }
 
@@ -195,6 +235,16 @@ public class StageManager : MonoBehaviour
 
         // ランダムな生成位置、ランダムなPrefabを抽選
         var spawnPoint = _spawnPointsInfo.spawnPoints[Random.Range(0, _spawnPointsInfo.spawnPoints.Count)];
+
+        while (_lastSpawnPoint == spawnPoint)
+        {
+            // ランダムな生成位置、ランダムなPrefabを抽選
+            spawnPoint = _spawnPointsInfo.spawnPoints[Random.Range(0, _spawnPointsInfo.spawnPoints.Count)];
+        }
+
+        // 最後の生成位置を更新
+        _lastSpawnPoint = spawnPoint;
+
         var prefab = prefabs[Random.Range(0, prefabs.Length)];
 
         // 抽選したPrefabを抽選した位置に生成する
@@ -219,5 +269,22 @@ public class StageManager : MonoBehaviour
 
         // Prefabを抽選した位置に生成する
         return Instantiate(prefab, spawnPoint + _bubbleSpawnHeight, Quaternion.identity);
+    }
+
+    /// <summary>
+    /// ランダムな生成位置に背景の泡を生成
+    /// </summary>
+    private Transform SpawnRandomBackGroundBubble()
+    {
+        if (_backGroundBubblePrefab == null) { return null; }
+
+        // 0～1の間のランダムな値を生成
+        float t = Random.value;
+
+        // ランダムな生成位置を抽選
+        var spawnPoint = Vector2.Lerp(_bubbleSpawnPointsInfo.leftPoint, _bubbleSpawnPointsInfo.rightPoint, t);
+
+        // Prefabを抽選した位置に生成する
+        return Instantiate(_backGroundBubblePrefab, spawnPoint + _bubbleSpawnHeight + _backGroundBubbleSpawnDeep, Quaternion.identity);
     }
 }
