@@ -151,22 +151,32 @@ public class Player : MonoBehaviour
             bubble.HitObstacle(this);
             bubbleCount++;
         }
-        else if (other.gameObject.TryGetComponent(out PointFish point))
-        {
-            point.HitObstacle(this);
-            currentColorType = ColorType.Default;
-            bubbleCount = 0;
-        }
+        //else if (other.gameObject.TryGetComponent(out PointFish point))
+        //{
+        //    point.HitObstacle(this);
+        //    currentColorType = ColorType.Default;
+        //    bubbleCount = 0;
+
+
+        //}
         else if (other.gameObject.TryGetComponent(out IObstacle obstacles))
         {
-            obstacles.HitObstacle(this);
-            AudioPlayManager.Instance.PlaySE2D
-            (
+            (bool s, int p) a = obstacles.HitObstacle(this);
+
+            if (!a.s)
+            {
+                AudioPlayManager.Instance.PlaySE2D
+                (
                 (int)_playSEInfo.mySENumber,
-                _playSEInfo.minPitch,
-                _playSEInfo.maxPitch,
-                _playSEInfo.volume
-            );
+               _playSEInfo.minPitch,
+               _playSEInfo.maxPitch,
+               _playSEInfo.volume
+               );
+            }
+            else
+            {
+                score = a.p;
+            }
             currentColorType = ColorType.Default;
             bubbleCount = 0;
         }
@@ -216,12 +226,5 @@ public class Player : MonoBehaviour
                 break;
         }
     }
-    public bool AddScore()
-    {
-        return addScore;
-    }
-    public void AddedScore()
-    {
-        addScore = false;
-    }
+    public int score;
 }
