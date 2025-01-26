@@ -48,11 +48,7 @@ public class LarvaeFish : MonoBehaviour, IObstacle
     public (bool, int) HitObstacle(Player player)
     {
         // PLが膨らんでいなければ助けられる
-
-        var isSuccess = true;
-        /*
-        // 同じ色なら助けられる
-        var isSuccess = _myColorType == player.CurrentColorType;
+        var isSuccess = !player.IsBigPuffer;
 
         // 助けられる場合のみ効果音を鳴らす
         if (isSuccess)
@@ -65,20 +61,7 @@ public class LarvaeFish : MonoBehaviour, IObstacle
                 _playSEInfo.maxPitch,
                 _playSEInfo.volume
             );
-            //スコア加算用
-            player.HitPoint(_myColorType);
         }
-        else
-        {
-            AudioPlayManager.Instance.PlaySE2D
-            (
-                3,
-                _playSEInfo.minPitch,
-                _playSEInfo.maxPitch,
-                _playSEInfo.volume
-            );
-        }
-        */
 
         // 移動量を初期化
         _myRigidbody.velocity = Vector2.zero;
