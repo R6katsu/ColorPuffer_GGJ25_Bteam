@@ -64,7 +64,7 @@ public class Player : MonoBehaviour
     {
         movement = Vector2.zero;
         // “ü—Í’l‚ðŽæ“¾
-        if(gameManager.IsStop())
+        if(gameManager.IsStop)
         {
             rb.velocity = Vector2.zero;
             small.material = color[0];
@@ -142,7 +142,7 @@ public class Player : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (gameManager.IsStop())
+        if (gameManager.IsStop)
         {
             return;
         }

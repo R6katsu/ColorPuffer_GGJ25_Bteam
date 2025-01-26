@@ -26,7 +26,9 @@ static public class ScrollUtility
     /// </summary>
     static public void ChangeIsScroll(Type types, bool isScroll)
     {
-        //if (types != typeof(GameManager)) { return; }
+
+        Debug.Log(types);
+        if (types != typeof(GameManager)) { return; }
 
         IsScroll = isScroll;
     }

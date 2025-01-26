@@ -187,6 +187,8 @@ public class StageManager : MonoBehaviour
             }
         }
 
+        if (_stageEvents == null || _stageEvents.Count <= 0) { return; }
+
         var stageEvent = _stageEvents[Random.Range(0, _stageEvents.Count)];
         StartCoroutine(stageEvent.StageEvent(this));
     }
@@ -247,8 +249,6 @@ public class StageManager : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(span);
-
-            Debug.Log(span);
 
             // 生成位置の上書きがnullだったら通常の生成位置を使用
             var spawnPoints = (_overrideSpawnPoints == null) ? _spawnPointsInfo.spawnPoints.ToArray() : _overrideSpawnPoints;

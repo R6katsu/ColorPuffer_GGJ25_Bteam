@@ -28,6 +28,11 @@ public class GameManager : MonoBehaviour
     private float aditionalTime = 0;
     private bool isStop = false;
 
+    /// <summary>
+    /// 停止フラグ
+    /// </summary>
+    public bool IsStop { get => isStop; }
+
     // Update is called once per frame
     void Update()
     {
@@ -35,6 +40,9 @@ public class GameManager : MonoBehaviour
         countdownTime -= Time.deltaTime;
         if (countdownTime <= 0) //0になったら
         {
+            // スクロールを停止
+            ScrollUtility.ChangeIsScroll(this.GetType(), !isStop);
+
             totalScore = currentScore;
             if (mainCamera.orthographic)
             {
@@ -74,10 +82,6 @@ public class GameManager : MonoBehaviour
     public void ResetScore()
     {
         totalScore = 0;
-    }
-    public bool IsStop() //停止フラグ
-    {
-        return isStop;
     }
     public void IsStart() //起動用（仮）
     {
