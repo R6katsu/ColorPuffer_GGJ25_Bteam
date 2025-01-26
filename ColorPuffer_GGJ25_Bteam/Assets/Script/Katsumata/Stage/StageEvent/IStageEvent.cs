@@ -33,9 +33,14 @@ public interface IStageEvent
     public int EventProbability { get; }
 
     /// <summary>
+    /// イベントの長さ
+    /// </summary>
+    public int EventLength { get; }
+
+    /// <summary>
     /// ステージで発生するイベント
     /// </summary>
-    public void StageEvent(StageManager stageManager);
+    public IEnumerator StageEvent(StageManager stageManager);
 
     // StageManagerを渡して、好き勝手処理して貰う？
     // StageManager側でいじれる値を用意しておき、StageEventの関数内でいじる

@@ -27,6 +27,11 @@ public class MoveRestrictions : MonoBehaviour, IStageEvent
     private SpawnPointsInfo _spawnPointsInfo = new();
 
     /// <summary>
+    /// イベントの長さ
+    /// </summary>
+    public int EventLength { get; }
+
+    /// <summary>
     /// イベントが発生する確率
     /// </summary>
     public int EventProbability { get; }
@@ -34,8 +39,10 @@ public class MoveRestrictions : MonoBehaviour, IStageEvent
     /// <summary>
     /// ステージで発生するイベント
     /// </summary>
-    public void StageEvent(StageManager stageManager)
+    public IEnumerator StageEvent(StageManager stageManager)
     {
+        yield return null;
+
         // 地面を徐々に上げる
         StartCoroutine(LoomingGround(stageManager));
 
