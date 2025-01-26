@@ -11,6 +11,6 @@ public class ScoreView : MonoBehaviour
     private void Start()
     {
         scoreIndex = GameManager.getscore();
-        score.text = scoreIndex.ToString();
+        score.text = "SCORE:" + scoreIndex.ToString();
     }
 }
