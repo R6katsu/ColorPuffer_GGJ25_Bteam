@@ -108,6 +108,11 @@ public class TrappedFish : MonoBehaviour, IObstacle
 
     private void Update()
     {
+        if (!ScrollUtility.IsScroll)
+        {
+            _myLinerMoveAnimation2D.DisableAnimation();
+        }
+
         if (_myLineRenderer == null || _isFlight) { return; }
 
         _myLineRenderer.SetPosition(0, _myTransform.position);

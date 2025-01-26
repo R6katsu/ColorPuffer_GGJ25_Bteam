@@ -68,6 +68,9 @@ public class StageManager : MonoBehaviour
     [SerializeField, Header("背景の泡")]
     private Transform _backGroundBubblePrefab = null;
 
+    [SerializeField, Min(0.0f), Header("ステージイベントを抽選する間隔")]
+    private float _stageEventSpan = 0.0f;
+
     [SerializeField, Min(0.0f), Header("障害物を生成する間隔")]
     private float _obstacleSpawnSpan = 0.0f;
 
@@ -174,17 +177,17 @@ public class StageManager : MonoBehaviour
         StartCoroutine(RandomBubbleSpawner(_bubblePrefabs.ToArray(), _bubbleSpawnSpan));
 
         // 発生するステージイベントの配列を作成
-        List<IStageEvent> istageEvents = new();
+        List<IStageEvent> stageEvents = new();
         foreach (var n in GameObject.FindObjectsOfType<Component>())
         {
             var component = n as IStageEvent;
             if (component != null)
             {
-                istageEvents.Add(component);
+                stageEvents.Add(component);
             }
         }
 
-        foreach (var istageEvent in istageEvents)
+        foreach (var istageEvent in stageEvents)
         {
             for (int i = 0; i < istageEvent.EventProbability; i++)
             {
@@ -192,10 +195,8 @@ public class StageManager : MonoBehaviour
             }
         }
 
-        if (_stageEvents == null || _stageEvents.Count <= 0) { return; }
-
-        var stageEvent = _stageEvents[Random.Range(0, _stageEvents.Count)];
-        StartCoroutine(stageEvent.StageEvent(this));
+        // ステージイベントのスポナー
+        StartCoroutine(StageEventSpawner(_stageEvents.ToArray(), _stageEventSpan));
     }
 
     private void Update()
@@ -244,6 +245,26 @@ public class StageManager : MonoBehaviour
     }
 
     /// <summary>
+    /// ステージイベントのスポナー
+    /// </summary>
+    /// <param name="stageEvents"></param>
+    /// <param name="span"></param>
+    /// <returns></returns>
+    private IEnumerator StageEventSpawner(IStageEvent[] stageEvents, float span)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(span);
+
+            if (!ScrollUtility.IsScroll) { continue; }
+            if (stageEvents == null || stageEvents.Length <= 0) { continue; }
+
+            var stageEvent = stageEvents[Random.Range(0, stageEvents.Length)];
+            StartCoroutine(stageEvent.StageEvent(this));
+        }
+    }
+
+    /// <summary>
     /// 障害物のスポナー
     /// </summary>
     /// <param name="prefabs"></param>
@@ -254,6 +275,8 @@ public class StageManager : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(span);
+
+            if (!ScrollUtility.IsScroll) { continue; }
 
             // 生成位置の上書きがnullだったら通常の生成位置を使用
             var spawnPoints = (_overrideSpawnPoints == null) ? _spawnPointsInfo.spawnPoints.ToArray() : _overrideSpawnPoints;
@@ -279,6 +302,8 @@ public class StageManager : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(span);
+
+            if (!ScrollUtility.IsScroll) { continue; }
 
             // ランダムな泡をランダムな位置に生成
             var entity = SpawnRandomBubble(prefabs);
