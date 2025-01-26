@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections;
 
 #if UNITY_EDITOR
@@ -46,6 +47,21 @@ public class TrappedFish : MonoBehaviour, IObstacle
 
     [Tooltip("“¦‘–’†")]
     private bool _isFlight = false;
+
+    /// <summary>
+    /// íœ‚Ìˆ—
+    /// </summary>
+    public Action DieEvent { get; set; }
+
+    private void OnDisable()
+    {
+        Dispose();
+    }
+
+    public void Dispose()
+    {
+        DieEvent?.Invoke();
+    }
 
     private void OnEnable()
     {

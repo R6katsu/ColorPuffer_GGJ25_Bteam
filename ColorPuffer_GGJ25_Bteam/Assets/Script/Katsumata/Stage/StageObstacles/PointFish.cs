@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -37,6 +38,21 @@ public class PointFish : MonoBehaviour, IObstacle
 
     [Tooltip("©g‚ÌScrollObstacle")]
     private ScrollObstacle _myScrollObstacle = null;
+
+    /// <summary>
+    /// íœ‚Ìˆ—
+    /// </summary>
+    public Action DieEvent { get; set; }
+
+    private void OnDisable()
+    {
+        Dispose();
+    }
+
+    public void Dispose()
+    {
+        DieEvent?.Invoke();
+    }
 
     private void OnEnable()
     {

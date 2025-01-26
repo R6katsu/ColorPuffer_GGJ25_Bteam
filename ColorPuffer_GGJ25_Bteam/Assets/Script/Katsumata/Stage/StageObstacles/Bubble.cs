@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 #if UNITY_EDITOR
@@ -39,6 +40,21 @@ public class Bubble : MonoBehaviour, IObstacle
     [Tooltip("–A‚Ìí—Ş‚ÆSprite‚Ì«‘")]
     private Dictionary<ColorType, Sprite> _bubbleColorSprites = new();
 
+    /// <summary>
+    /// íœ‚Ìˆ—
+    /// </summary>
+    public Action DieEvent { get; set; }
+
+    private void OnDisable()
+    {
+        Dispose();
+    }
+
+    public void Dispose()
+    {
+        DieEvent?.Invoke();
+    }
+
     private void OnEnable()
     {
         // RequireComponent
@@ -59,6 +75,8 @@ public class Bubble : MonoBehaviour, IObstacle
 
     private void FixedUpdate()
     {
+        if (!ScrollUtility.IsScroll) { return; }
+
         _myRigidbody.AddForce(_surfacedDirection * _surfacedSpeed, ForceMode2D.Force);
     }
 

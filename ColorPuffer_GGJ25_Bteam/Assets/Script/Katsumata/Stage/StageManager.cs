@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,7 +23,7 @@ public enum SpawnType : byte
 /// 生成位置の情報
 /// </summary>
 [Serializable]
-internal struct SpawnPointsInfo
+public struct SpawnPointsInfo
 {
     [Header("左の生成位置")]
     public Vector2 leftPoint;
@@ -97,12 +98,34 @@ public class StageManager : MonoBehaviour
     [Tooltip("前回生成した位置")]
     private Vector2 _lastSpawnPoint = Vector2.zero;
 
+    [Tooltip("生成したEntityのリスト")]
+    private List<Transform> _entitys = null;
+
+    [Tooltip("生成位置を上書きする生成位置の配列")]
+    private Vector2[] _overrideSpawnPoints = null;
+
+    /// <summary>
+    /// 読み取り専用の生成したEntityのリスト
+    /// </summary>
+    public ReadOnlyCollection<Transform> Entitys { get => new(_entitys); }
+
+    /*
+    public MoveRestrictions a = null;
+    private IEnumerator Start()
+    {
+        yield return new WaitForSeconds(5);
+        a.StageEvent(this);
+    }
+    */
+
+
     private void OnEnable()
     {
         // 初期化
         _obstaclePrefabs = new();
         _itemPrefabs = new();
         _bubblePrefabs = new();
+        _entitys = new();
 
         // GenerationProbabilityを使って生成対象の配列を作成する
         foreach (var generationProbability in _generationProbabilitys)
@@ -202,7 +225,13 @@ public class StageManager : MonoBehaviour
         {
             yield return new WaitForSeconds(span);
 
-            SpawnRandomPrefab(prefabs);
+            // 生成位置の上書きがnullだったら通常の生成位置を使用
+            var spawnPoints = (_overrideSpawnPoints == null) ? _spawnPointsInfo.spawnPoints.ToArray() : _overrideSpawnPoints;
+
+            var entity = SpawnRandomPrefab(prefabs, spawnPoints);
+
+            // まだ含まれていなければ追加
+            AddEntitys(entity);
         }
     }
 
@@ -219,7 +248,10 @@ public class StageManager : MonoBehaviour
             yield return new WaitForSeconds(span);
 
             // ランダムな泡をランダムな位置に生成
-            SpawnRandomBubble(prefabs);
+            var entity = SpawnRandomBubble(prefabs);
+
+            // まだ含まれていなければ追加
+            AddEntitys(entity);
 
             // 背景の泡を背景のランダムな位置に生成
             SpawnRandomBackGroundBubble();
@@ -227,19 +259,43 @@ public class StageManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 生成したEntityを辞書に追加
+    /// </summary>
+    /// <param name="entity">生成したEntity</param>
+    private void AddEntitys(Transform entity)
+    {
+        // 既に含まれていた、またはnullだった
+        if (_entitys.Contains(entity) || entity == null) { return; }
+
+        // リストに追加
+        _entitys.Add(entity);
+
+        if (entity.TryGetComponent(out IObstacle observable))
+        {
+            observable.DieEvent += () =>
+            {
+                if (_entitys.Contains(entity))
+                {
+                    _entitys.Remove(entity);
+                }
+            };
+        }
+    }
+
+    /// <summary>
     /// ランダムな生成位置にランダムなPrefabを生成
     /// </summary>
-    private Transform SpawnRandomPrefab(Transform[] prefabs)
+    private Transform SpawnRandomPrefab(Transform[] prefabs, Vector2[] spawnPoints)
     {
         if (prefabs == null || prefabs.Length <= 0) { return null; }
 
         // ランダムな生成位置、ランダムなPrefabを抽選
-        var spawnPoint = _spawnPointsInfo.spawnPoints[Random.Range(0, _spawnPointsInfo.spawnPoints.Count)];
+        var spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
 
         while (_lastSpawnPoint == spawnPoint)
         {
             // ランダムな生成位置、ランダムなPrefabを抽選
-            spawnPoint = _spawnPointsInfo.spawnPoints[Random.Range(0, _spawnPointsInfo.spawnPoints.Count)];
+            spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
         }
 
         // 最後の生成位置を更新
@@ -287,4 +343,15 @@ public class StageManager : MonoBehaviour
         // Prefabを抽選した位置に生成する
         return Instantiate(_backGroundBubblePrefab, spawnPoint + _bubbleSpawnHeight + _backGroundBubbleSpawnDeep, Quaternion.identity);
     }
+
+    /// <summary>
+    /// 生成位置を上書き
+    /// </summary>
+    /// <param name="overrideSpawnPoints"></param>
+    public void OverrideSpawnPoints(Vector2[] overrideSpawnPoints) => _overrideSpawnPoints = overrideSpawnPoints;
+
+    /// <summary>
+    /// 生成位置の上書きを終了
+    /// </summary>
+    public void ResetOverrideSpawnPoints() => _overrideSpawnPoints = null;
 }
