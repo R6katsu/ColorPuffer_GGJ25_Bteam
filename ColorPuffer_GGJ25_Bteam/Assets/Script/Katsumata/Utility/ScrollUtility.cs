@@ -28,7 +28,7 @@ static public class ScrollUtility
     {
 
         Debug.Log(types);
-        if (types != typeof(GameManager)) { return; }
+        if (types != typeof(GameManager) && types != typeof(Result)) { return; }
 
         IsScroll = isScroll;
     }

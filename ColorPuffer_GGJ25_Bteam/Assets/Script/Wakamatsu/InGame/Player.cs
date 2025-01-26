@@ -53,6 +53,11 @@ public class Player : MonoBehaviour
     private float rotationAmount;
     private Quaternion originalRotation;
 
+    /// <summary>
+    /// –c‚ç‚ñ‚Å‚¢‚é
+    /// </summary>
+    public bool IsBigPuffer { get; private set; } = false;
+
     void Start()
     {
         originalRotation = transform.rotation;
@@ -84,11 +89,13 @@ public class Player : MonoBehaviour
         {
             smallPuffer.SetActive(true);
             bigPuffer.SetActive(false);
+            IsBigPuffer = false;
         }
         else
         {
             smallPuffer.SetActive(false);
             bigPuffer.SetActive(true);
+            IsBigPuffer = true;
         }
         ChangeColor();
         CurrentColorType = currentColorType;

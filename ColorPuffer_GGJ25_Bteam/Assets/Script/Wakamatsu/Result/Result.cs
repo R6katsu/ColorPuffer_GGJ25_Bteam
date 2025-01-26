@@ -56,6 +56,8 @@ public class Result : MonoBehaviour
         // なにかしらボタンを押した
         if (Input.anyKeyDown)
         {
+            ScrollUtility.ChangeIsScroll(this.GetType(), true);
+
             _isCompleted = false;
 
             // ボタン入力時の効果音を再生
