@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -19,7 +20,7 @@ public class MassOutbreak : MonoBehaviour, IStageEvent
     private float _overrideObstacleSpawnSpan = 0.0f;
 
     [SerializeField, Header("大量発生させる障害物")]
-    private Transform[] _overrideObstaclePrefabs = null;
+    private GenerationProbability[] _generationProbability = null;
 
     [SerializeField, Header("イベントの名称を書いたアニメーション")]
     private Animator _eventNameAnimator = null;
@@ -29,6 +30,9 @@ public class MassOutbreak : MonoBehaviour, IStageEvent
 
     [SerializeField, Header("シーン遷移終了の再生Trigger")]
     private string _endTriggerName = null;
+
+    [SerializeField, Header("既存の障害物を残して上書き")]
+    private bool _isLeave = false;
 
     /// <summary>
     /// イベントの長さ
@@ -43,13 +47,29 @@ public class MassOutbreak : MonoBehaviour, IStageEvent
     /// <summary>
     /// ステージで発生するイベント
     /// </summary>
-    public IEnumerator StageEvent(StageManager stageManager)//EndTrigger
+    public IEnumerator StageEvent(StageManager stageManager)
     {
         // 障害物を生成する間隔を上書きする
         stageManager.OverrideObstacleSpawnSpan(_overrideObstacleSpawnSpan);
 
+        List<Transform> obstaclePrefabs = new();
+        if (_isLeave)
+        {
+            foreach (var obstaclePrefabsbstaclePrefab in stageManager.ObstaclePrefabs)
+            {
+                obstaclePrefabs.Add(obstaclePrefabsbstaclePrefab);
+            }
+        }
+        foreach (var overrideObstaclePrefab in _generationProbability)
+        {
+            for (int i = 0; i < overrideObstaclePrefab.probability; i++)
+            {
+                obstaclePrefabs.Add(overrideObstaclePrefab.prefab);
+            }
+        }
+
         // 生成する障害物を上書きする
-        stageManager.OverrideObstaclePrefabs(_overrideObstaclePrefabs);
+        stageManager.OverrideObstaclePrefabs(obstaclePrefabs.ToArray());
 
         // 開始アニメーション再生
         StartCoroutine(PlayAnimationAndWait(_startTriggerName));

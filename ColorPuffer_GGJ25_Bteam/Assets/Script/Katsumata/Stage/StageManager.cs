@@ -39,7 +39,7 @@ public struct SpawnPointsInfo
 /// 生成確率
 /// </summary>
 [Serializable]
-internal struct GenerationProbability
+public struct GenerationProbability
 {
     [Header("生成するPrefab")]
     public Transform prefab;
@@ -117,6 +117,11 @@ public class StageManager : MonoBehaviour
     /// 読み取り専用の生成したEntityのリスト
     /// </summary>
     public ReadOnlyCollection<Transform> Entitys { get => new(_entitys); }
+
+    /// <summary>
+    /// 読み取り専用の障害物Prefab
+    /// </summary>
+    public ReadOnlyCollection<Transform> ObstaclePrefabs { get => new(_obstaclePrefabs); }
 
     private void OnEnable()
     {

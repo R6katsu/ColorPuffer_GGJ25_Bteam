@@ -41,12 +41,4 @@ public interface IStageEvent
     /// ステージで発生するイベント
     /// </summary>
     public IEnumerator StageEvent(StageManager stageManager);
-
-    // StageManagerを渡して、好き勝手処理して貰う？
-    // StageManager側でいじれる値を用意しておき、StageEventの関数内でいじる
-    // もっと小魚に登場する魚のPrefabなど、インスペクタから設定が必要なものがある
-    // IStageEventを継承したclassのインスペクタから設定する。
-    // また、シーンに存在するIStageEventを継承した全てのclassを最初に取得する
-    // この時、イベントが発生する確率もインターフェースで実装しておく
-    // イベントが発生している時、別のイベントが発生しないようにする
 }

@@ -19,6 +19,9 @@ public class Bubble : MonoBehaviour, IObstacle
     [Tooltip("•‚ã‚·‚é•ûŒü")]
     private static readonly Vector2 _surfacedDirection = Vector2.up;
 
+    [SerializeField, Min(0), Header("‹~•¬Œ÷‚Ì“¾“_")]
+    private int _point = 0;
+
     [SerializeField, Min(0.0f), Header("•‚ã‘¬“x")]
     private float _surfacedSpeed = 0.0f;
 
@@ -83,7 +86,7 @@ public class Bubble : MonoBehaviour, IObstacle
     /// <summary>
     /// PL‚É“–‚½‚Á‚½‚çPL‚ÌF‚ğ•Ï‚¦‚ÄÁ‚¦‚é
     /// </summary>
-    public bool HitObstacle(Player player)
+    public (bool, int) HitObstacle(Player player)
     {
         // –A‚ğæ“¾‚ÌŒø‰Ê‰¹‚ğÄ¶
         AudioPlayManager.Instance.PlaySE2D
@@ -101,6 +104,6 @@ public class Bubble : MonoBehaviour, IObstacle
         Destroy(gameObject);
 
         // â‘Î‚Étrue‚ğ•Ô‚·–A
-        return true;
+        return (true, _point);
     }
 }

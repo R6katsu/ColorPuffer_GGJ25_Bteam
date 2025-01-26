@@ -328,12 +328,17 @@ MonoBehaviour:
   _eventProbability: 1
   _eventLength: 10
   _overrideObstacleSpawnSpan: 1
-  _overrideObstaclePrefabs:
-  - {fileID: 1257051201540734713, guid: 8129996fe83f95c439dfe55f9e8b459a, type: 3}
-  - {fileID: 6814714050196679531, guid: c7ba825225a482f48a529ff8a0debd2a, type: 3}
+  _generationProbability:
+  - prefab: {fileID: 1257051201540734713, guid: 8129996fe83f95c439dfe55f9e8b459a, type: 3}
+    probability: 1
+    mySpawnType: 0
+  - prefab: {fileID: 6814714050196679531, guid: c7ba825225a482f48a529ff8a0debd2a, type: 3}
+    probability: 1
+    mySpawnType: 0
   _eventNameAnimator: {fileID: 1356658393}
   _startTriggerName: StartTrigger
   _endTriggerName: EndTrigger
+  _isLeave: 0
 --- !u!4 &80799646
 Transform:
   m_ObjectHideFlags: 0
@@ -379,9 +384,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2040192430}
-  - {fileID: 409084061}
   - {fileID: 1731860724}
   - {fileID: 979110826}
+  - {fileID: 207096631}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &180719028
@@ -482,6 +487,7 @@ RectTransform:
   - {fileID: 1126185833}
   - {fileID: 1356658390}
   - {fileID: 1779990694}
+  - {fileID: 1013786670}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -561,12 +567,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 207096629}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 10}
   m_LocalScale: {x: 19.8, y: 9.9, z: 1.0999999}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 140696186}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &210026448
 GameObject:
@@ -698,82 +704,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!1 &409084059
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 409084061}
-  - component: {fileID: 409084060}
-  m_Layer: 0
-  m_Name: StageManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &409084060
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 409084059}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76cc512e2229efa4f98da9bf50bd6a75, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _generationProbabilitys:
-  - prefab: {fileID: 991435671590000476, guid: 65faf14da4ca9294fb99495dbbfd8b73, type: 3}
-    probability: 100
-    mySpawnType: 2
-  - prefab: {fileID: 6901144978913644708, guid: c02aa876c856bc842948106bbb409c93, type: 3}
-    probability: 100
-    mySpawnType: 2
-  - prefab: {fileID: 1257051201540734713, guid: 8129996fe83f95c439dfe55f9e8b459a, type: 3}
-    probability: 20
-    mySpawnType: 0
-  - prefab: {fileID: 6814714050196679531, guid: c7ba825225a482f48a529ff8a0debd2a, type: 3}
-    probability: 20
-    mySpawnType: 0
-  - prefab: {fileID: 8290353138115056580, guid: b9e304ac57ed0ab4580245e67c02dfc0, type: 3}
-    probability: 10
-    mySpawnType: 0
-  - prefab: {fileID: 9190944786044648873, guid: 20cf84a5653d11b4f8277bc33d137365, type: 3}
-    probability: 100
-    mySpawnType: 0
-  _backGroundBubblePrefab: {fileID: 0}
-  _obstacleSpawnSpan: 0.9
-  _itemSpawnSpan: 1.1
-  _bubbleSpawnSpan: 1
-  _spawnPointsInfo:
-    leftPoint: {x: 10, y: 2.5}
-    rightPoint: {x: 10, y: -2.5}
-    spawnPoints: []
-  _bubbleSpawnPointsInfo:
-    leftPoint: {x: -10, y: 0}
-    rightPoint: {x: 10, y: 0}
-    spawnPoints: []
-  _backGroundAnimators: []
---- !u!4 &409084061
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 409084059}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 10}
-  m_LocalScale: {x: 19.8, y: 9.9, z: 1.0999999}
-  m_ConstrainProportionsScale: 1
-  m_Children: []
-  m_Father: {fileID: 140696186}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &792620289
 GameObject:
   m_ObjectHideFlags: 0
@@ -806,11 +736,14 @@ MonoBehaviour:
   _eventProbability: 1
   _eventLength: 10
   _overrideObstacleSpawnSpan: 1
-  _overrideObstaclePrefabs:
-  - {fileID: 8290353138115056580, guid: b9e304ac57ed0ab4580245e67c02dfc0, type: 3}
+  _generationProbability:
+  - prefab: {fileID: 8290353138115056580, guid: b9e304ac57ed0ab4580245e67c02dfc0, type: 3}
+    probability: 1
+    mySpawnType: 0
   _eventNameAnimator: {fileID: 1779990697}
   _startTriggerName: StartTrigger
   _endTriggerName: EndTrigger
+  _isLeave: 0
 --- !u!4 &792620291
 Transform:
   m_ObjectHideFlags: 0
@@ -1061,6 +994,103 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 74a8327bc863da44d8f4accb70690bce, type: 3}
   - {fileID: 8300000, guid: fe9bc427b2e767443a609eced1da9fa0, type: 3}
   - {fileID: 8300000, guid: 64706e159401e93469a2ba33c1a5dcfc, type: 3}
+--- !u!1 &1013786669
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1013786670}
+  - component: {fileID: 1013786673}
+  - component: {fileID: 1013786672}
+  - component: {fileID: 1013786671}
+  m_Layer: 0
+  m_Name: LarvaeFishAnim
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1013786670
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013786669}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 180719032}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1013786671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013786669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: be6dd76cb5706134795ff464e1b5b591, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1013786672
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013786669}
+  m_CullTransparentMesh: 1
+--- !u!95 &1013786673
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013786669}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5e30f968bbec4994e8b1f263cc167a5f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1126185832
 GameObject:
   m_ObjectHideFlags: 0
@@ -1623,6 +1653,61 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af780e2eb71e3c54b8ae0595e5a3de49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1517961001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1517961003}
+  - component: {fileID: 1517961002}
+  m_Layer: 0
+  m_Name: LarvaeFish
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1517961002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1517961001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bae3fe6fd54d3241b7945670a2551e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _eventProbability: 1
+  _eventLength: 10
+  _overrideObstacleSpawnSpan: 1
+  _generationProbability:
+  - prefab: {fileID: 6799297863800285029, guid: 2c200b5b0debc1247ae5285224073027, type: 3}
+    probability: 50
+    mySpawnType: 0
+  _eventNameAnimator: {fileID: 1013786673}
+  _startTriggerName: StartTrigger
+  _endTriggerName: EndTrigger
+  _isLeave: 1
+--- !u!4 &1517961003
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1517961001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1524085852
 GameObject:
   m_ObjectHideFlags: 0
@@ -2342,8 +2427,8 @@ SceneRoots:
   - {fileID: 180719032}
   - {fileID: 2948423}
   - {fileID: 140696186}
-  - {fileID: 207096631}
   - {fileID: 210026450}
   - {fileID: 1524085854}
   - {fileID: 80799646}
   - {fileID: 792620291}
+  - {fileID: 1517961003}
