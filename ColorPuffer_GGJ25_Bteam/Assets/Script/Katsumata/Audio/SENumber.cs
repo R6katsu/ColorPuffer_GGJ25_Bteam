@@ -6,4 +6,5 @@ public enum SENumber : int
     [Tooltip("–A")] Bubble,
     [Tooltip("Œˆ’èƒ{ƒ^ƒ“41")] Button41,
     [Tooltip("¬ƒpƒ“ƒ`")] punch,
+    [Tooltip("‘fU‚è")]shu,
 }

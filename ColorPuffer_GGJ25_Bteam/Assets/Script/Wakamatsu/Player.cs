@@ -38,6 +38,8 @@ public class Player : MonoBehaviour
     private Material[] color;
     [SerializeField]
     private PlaySEInfo _playSEInfo = new PlaySEInfo();
+    [SerializeField]
+    private GameManager gameManager;
     private ColorType currentColorType = ColorType.Default;
     public ColorType CurrentColorType { get; private set; }
 
@@ -62,6 +64,16 @@ public class Player : MonoBehaviour
     {
         movement = Vector2.zero;
         // “ü—Í’l‚ðŽæ“¾
+        if(gameManager.IsStop())
+        {
+            rb.velocity = Vector2.zero;
+            small.material = color[0];
+            transform.position = Vector2.zero;
+            transform.rotation = originalRotation;
+            smallPuffer.SetActive(true);
+            bigPuffer.SetActive(false);
+            return;
+        }
         moveX = Input.GetAxis("Horizontal");
         moveY = Input.GetAxis("Vertical");
         MoveArea(); //”ÍˆÍŽw’è
@@ -130,6 +142,10 @@ public class Player : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (gameManager.IsStop())
+        {
+            return;
+        }
         if (other.gameObject.TryGetComponent(out Bubble bubble))
         {
             bubble.HitObstacle(this);
