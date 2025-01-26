@@ -19,7 +19,7 @@ static public class ScrollUtility
     /// <summary>
     /// スクロールするか
     /// </summary>
-    static public bool IsScroll { get; private set; } = false;
+    static public bool IsScroll { get; private set; } = true;
 
     /// <summary>
     /// IsScrollフラグを切り替える

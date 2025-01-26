@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using System;
+
 
 #if UNITY_EDITOR
 using UnityEngine.UIElements;
@@ -25,6 +27,21 @@ public class Fish : MonoBehaviour, IObstacle
     {
         // RequireComponent
         TryGetComponent(out _myRigidbody);
+    }
+
+    /// <summary>
+    /// 削除時の処理
+    /// </summary>
+    public Action DieEvent { get; set; }
+
+    private void OnDisable()
+    {
+        Dispose();
+    }
+
+    public void Dispose()
+    {
+        DieEvent?.Invoke();
     }
 
     /// <summary>
@@ -67,7 +84,7 @@ public class Fish : MonoBehaviour, IObstacle
             transform.Rotate(dir * speed);
         }
 
-        // 角度を実行
+        // 角度を確定
         tfm.rotation = Quaternion.identity;
     }
 }
