@@ -77,7 +77,7 @@ public class AudioPlayManager : SingletonMonoBehaviour<AudioPlayManager>
         // ランダムなピッチの範囲を設定
         float randomPitch = Random.Range(minPitch, maxPitch);
 
-        // AudioSource.PlayClipAtPointにピッチの項目を追加した処理
+        // MyAudioSource.PlayClipAtPointにピッチの項目を追加した処理
         GameObject gameObject = new GameObject("One shot audio");
         gameObject.transform.position = position;
         AudioSource audioSource = (AudioSource)gameObject.AddComponent(typeof(AudioSource));
